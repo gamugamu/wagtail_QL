@@ -92,12 +92,38 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if os.getenv('NODB'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    # Dockerfile reads the DJANGO_PW from the secret into an environment
+    # variable but its not there on kubectl exec. Soon Kubernetes versions
+    # will have secrets as environment variables but currently just read it
+    # from the volume
+    DJANGO_PW = os.getenv('DJANGO_PASSWORD')
+    if not DJANGO_PW:
+        try:
+            f = open('/etc/secrets/djangouserpw')
+            DJANGO_PW = f.readline().rstrip()
+        except IOError:
+            pass
+    if not DJANGO_PW:
+        raise Exception("No DJANGO_PASSWORD provided.")
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'models',
+            'USER': 'postgres',
+            'PASSWORD': DJANGO_PW,
+            'HOST': os.getenv('POSTGRES_SERVICE_HOST', '127.0.0.1'),
+            'PORT': os.getenv('POSTGRES_SERVICE_PORT', 5432)
+        }
+    }
 
 CACHES = {
     'default': {

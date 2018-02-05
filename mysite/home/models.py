@@ -8,7 +8,6 @@ from wagtail.wagtailcore.fields import RichTextField
 from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
 class HomePage(Page):
-    print "reload-------"
     foo = "hello chewbakka"
 
     def visited(self):

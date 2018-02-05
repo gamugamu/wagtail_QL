@@ -1,3 +1,4 @@
+
 FROM gcr.io/google_appengine/python
 
 RUN virtualenv /env
@@ -10,8 +11,10 @@ ADD requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
 # no database - SQL only
-ENV NODB 1
+#ENV NODB 1
 
 ADD . /app
 
-CMD export DJANGO_PASSWORD=$(cat /etc/secrets/djangouserpw); gunicorn -b :$PORT mysite.wsgi
+#CMD export DJANGO_PASSWORD=$(cat /etc/secrets/djangouserpw)
+
+CMD export DJANGO_PASSWORD=mysecretpassword; gunicorn -b :$PORT mysite.wsgi
