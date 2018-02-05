@@ -13,8 +13,7 @@ spec:
     spec:
       containers:
       - name: guestbook
-        image: local/frontend
-        #image: gcr.io/fire-193914/frontend
+        image: gcr.io/fire-193914/frontend
         #->! prod
         imagePullPolicy: IfNotPresent
         ports:

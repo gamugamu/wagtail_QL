@@ -34,7 +34,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pv0001
+  name: 0001
 spec:
   accessModes:
     - ReadWriteOnce
@@ -59,7 +59,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: gcr.io/utopian-pact-123818/postgres-pw
+        image: gcr.io/fire-193914/postgres
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5432
@@ -89,4 +89,3 @@ spec:
     targetPort: 5432
   selector:
     name: postgres
-

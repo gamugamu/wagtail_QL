@@ -15,6 +15,4 @@ RUN pip install -r /app/requirements.txt
 
 ADD . /app
 
-#CMD export DJANGO_PASSWORD=$(cat /etc/secrets/djangouserpw)
-
-CMD export DJANGO_PASSWORD=mysecretpassword; gunicorn -b :$PORT mysite.wsgi
+CMD export DJANGO_PASSWORD=$(cat /etc/secrets/djangouserpw); gunicorn -b :$PORT mysite.wsgi
