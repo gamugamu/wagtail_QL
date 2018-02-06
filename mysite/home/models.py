@@ -8,7 +8,12 @@ from wagtail.wagtailcore.fields import RichTextField
 from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
 class HomePage(Page):
-    foo = "hello chewbakka"
+    body = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('body', classname="full"),
+    ]
+
 
     def visited(self):
         """ Updates the visited count by one in the cache

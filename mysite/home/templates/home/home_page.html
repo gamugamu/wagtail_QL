@@ -5,6 +5,6 @@
 {% block body_class %}template-homepage{% endblock %}
 
 {% block content %}
-    {{ page.foo }}
     {{ page.visited }}
+    {{ page.body|richtext }}
 {% endblock %}
