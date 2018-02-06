@@ -30,7 +30,3 @@ class HomePage(Page):
         cache.set('visited', str(visited))
 
         return str(visited)
-
-    #content_panels = Page.content_panels + [
-    #    FieldPanel('body', classname="full"),
-    #]
