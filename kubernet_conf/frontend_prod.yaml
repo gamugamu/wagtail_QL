@@ -43,6 +43,8 @@ metadata:
     name: guestbook
 spec:
   type: LoadBalancer
+  loadBalancerIP: 35.189.238.42
+
   ports:
   - port: 80
     targetPort: 8080
