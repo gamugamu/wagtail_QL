@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'modelcluster',
     'taggit',
+    'bootstrap4',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -191,3 +192,10 @@ BASE_URL = 'http://example.com'
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_BUCKET_NAME = "wagtailqlbucket"
+
+BOOTSTRAP3 = {
+    # The URL to the jQuery JavaScript file
+    'jquery_url': '//code.jquery.com/jquery.min.js',
+    # The Bootstrap base URL
+    'css_url': 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/4.0.2/bootstrap-material-design.css',
+}

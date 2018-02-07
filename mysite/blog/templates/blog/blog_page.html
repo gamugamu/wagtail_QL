@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 
 {% load wagtailcore_tags wagtailimages_tags %}
-
+{% load bootstrap4 %}
 {% block body_class %}template-blogpage{% endblock %}
 
 {% block content %}
     <h1>{{ page.title }}</h1>
     <p class="meta">{{ page.date }}</p>
+    {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+    {% bootstrap_button "Save" button_type="submit" button_class="btn-secondary" %}
+    {% bootstrap_button "Save" button_type="submit" button_class="btn-info" %}
+    {% bootstrap_button "Save" button_type="submit" button_class="btn btn-warning" %}
+    {% bootstrap_button "Save" button_type="submit" button_class="btn btn-link" %}
+    {% bootstrap_button "Save" button_type="submit" button_class="btn-raised btn-primary" %}
 
     <div class="intro">{{ page.intro }}</div>
 

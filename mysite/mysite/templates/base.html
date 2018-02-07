@@ -23,22 +23,23 @@
 
         {# Global stylesheets #}
         <link rel="stylesheet" type="text/css" href="{% static 'css/mysite.css' %}">
-
         {% block extra_css %}
             {# Override this in templates to add extra stylesheets #}
+            {% load bootstrap4 %}
+            {% bootstrap_css %}
         {% endblock %}
     </head>
 
     <body class="{% block body_class %}{% endblock %}">
         {% wagtailuserbar %}
-
         {% block content %}{% endblock %}
-
         {# Global javascript #}
         <script type="text/javascript" src="{% static 'js/mysite.js' %}"></script>
 
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}
+            {% bootstrap_javascript jquery='full' %}
+            {% bootstrap_messages %}
         {% endblock %}
     </body>
 </html>
