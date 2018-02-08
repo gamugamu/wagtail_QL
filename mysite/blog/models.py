@@ -55,8 +55,8 @@ class BlogPage(Page):
         return context
 
 class BlogPageGalleryImage(Orderable):
-    page = ParentalKey(BlogPage, related_name='gallery_images')
-    image = models.ForeignKey(
+    page    = ParentalKey(BlogPage, related_name='gallery_images')
+    image   = models.ForeignKey(
         'wagtailimages.Image', on_delete=models.CASCADE, related_name='+'
     )
     caption = models.CharField(blank=True, max_length=250)

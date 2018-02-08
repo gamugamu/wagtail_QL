@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'home',
     'search',
     'blog',
+    'schema',
 
     'wagtail.wagtailforms',
     'wagtail.wagtailredirects',
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'modelcluster',
     'taggit',
     'bootstrap4',
+    'graphene_django',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -197,4 +199,8 @@ BOOTSTRAP3 = {
     'jquery_url': '//code.jquery.com/jquery.min.js',
     # The Bootstrap base URL
     'css_url': 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/4.0.2/bootstrap-material-design.css',
+}
+
+GRAPHENE = {
+    'SCHEMA': 'schema.schema.schema' #folder.file.object
 }
