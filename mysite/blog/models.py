@@ -8,7 +8,7 @@ from wagtail.wagtailcore.fields import RichTextField
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, InlinePanel
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtailsearch import index
-
+from django import forms
 
 class BlogIndexPage(Page):
     intro = RichTextField(blank=True)
@@ -24,10 +24,16 @@ class BlogIndexPage(Page):
         context['blogpages'] = blogpages
         return context
 
+class UrlForm(forms.Form):
+    url = forms.URLField(label='URL')
+    title = forms.CharField(label='Title')
+    nick = forms.CharField(label='Nick')
+
 class BlogPage(Page):
     date    = models.DateField("Post date")
     intro   = models.CharField(max_length=250)
     body    = RichTextField(blank=True)
+    form    = forms.CharField(label='Your name', max_length=100)
 
     search_fields = Page.search_fields + [
         index.SearchField('intro'),
@@ -40,6 +46,13 @@ class BlogPage(Page):
         FieldPanel('body', classname="full"),
         InlinePanel('gallery_images', label="Gallery images"),
     ]
+
+    def get_context(self, request):
+        # Update context to include only published posts, ordered by reverse-chron
+        form = UrlForm()
+        context = super(BlogPage, self).get_context(request)
+        context['form'] = form
+        return context
 
 class BlogPageGalleryImage(Orderable):
     page = ParentalKey(BlogPage, related_name='gallery_images')
