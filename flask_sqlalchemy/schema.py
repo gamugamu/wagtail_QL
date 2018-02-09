@@ -22,7 +22,6 @@ class AddNewPet(graphene.Mutation):
 
     pet = graphene.Field(lambda: Pet)
 
-    @staticmethod
     def mutate(self, info, add_pet=None, to_user_id=0):
         pet         = PetModel(name=add_pet.name)
         user        = db_session.query(UserModel).filter(UserModel.id == to_user_id).first()
@@ -38,7 +37,6 @@ class CreateUser(graphene.Mutation):
 
     user = graphene.Field(lambda: User)
 
-    @staticmethod
     def mutate(self, info, name, add_pet=None):
         user = UserModel(name=name)
 
