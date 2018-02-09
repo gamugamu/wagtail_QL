@@ -1,3 +1,4 @@
+# coding: utf-8
 # flask_sqlalchemy/models.py
 from sqlalchemy import *
 from sqlalchemy.orm import (scoped_session, sessionmaker, relationship,
@@ -13,12 +14,10 @@ Base = declarative_base()
 # We will need this for querying
 Base.query = db_session.query_property()
 
-
 class Department(Base):
     __tablename__   = 'department'
     id              = Column(Integer, primary_key=True)
     name            = Column(String)
-
 
 class Employee(Base):
     __tablename__   = 'employee'
@@ -37,9 +36,21 @@ class User(Base):
     id              = Column(Integer, primary_key=True)
     name            = Column(String)
     last_name       = Column(String)
+    pets            = relationship("Pet", back_populates="user")
+
+
+class Pet(Base):
+    __tablename__   = 'pet'
+    id              = Column(Integer, primary_key=True)
+    name            = Column(String)
+    user_id         = Column(Integer, ForeignKey('user.id'))
+    user            = relationship("User", back_populates="pets")
 
 class DBHelper():
     @staticmethod
     def fast_commit(instance=None):
         db_session.add(instance)
         db_session.commit()
+
+#crée les tables
+Base.metadata.create_all(engine)
