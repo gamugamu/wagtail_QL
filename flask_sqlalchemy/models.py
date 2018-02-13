@@ -45,7 +45,8 @@ class Pet(Base):
     name            = Column(String)
     user_id         = Column(Integer, ForeignKey('user.id'))
     user            = relationship("User", back_populates="pets")
-
+    url_avatar      = Column(String)
+    
 class DBHelper():
     @staticmethod
     def fast_commit(instance=None):

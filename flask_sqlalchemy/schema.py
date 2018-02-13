@@ -13,7 +13,8 @@ class User(SQLAlchemyObjectType):
         model = UserModel
 
 class PetField(graphene.InputObjectType):
-    name = graphene.String(required=True)
+    name        = graphene.String(required=True)
+    url_avatar  = graphene.String()
 
 class AddNewPet(graphene.Mutation):
     class Arguments:
