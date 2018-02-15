@@ -4,12 +4,14 @@ from flask import Flask, request
 from flask_graphql import GraphQLView
 from flask import json
 from flask import Response
+from flask_cors import CORS
 
 from models import db_session
 from schema import schema
 from test import upload_to_default_bucket
 
 app = Flask(__name__)
+CORS(app)
 app.debug = True
 
 # graphQL services
@@ -22,6 +24,10 @@ app.add_url_rule(
         context_value={'session': db_session}
     )
 )
+
+@app.route('/testservice')
+def test():
+    return json.dumps({'hello': 'hello from json'})
 
 #image upload. GraphQl ne gère pas bien les uploads de data.
 @app.route('/uploadfile', methods=['POST'])
