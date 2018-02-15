@@ -1,0 +1,7 @@
+mutation myMutation {
+  addNewPet(addPet: {name: "petiboo", linkUuidAvatar: "358521a281644a1794bd251373eb8d8d"}, toUserId:2) {
+    pet{
+      name
+    }
+  }
+}
