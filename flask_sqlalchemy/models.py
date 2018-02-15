@@ -5,8 +5,8 @@ from sqlalchemy.orm import (scoped_session, sessionmaker, relationship,
                             backref)
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('sqlite:///database.sqlite3', convert_unicode=True)
-db_session = scoped_session(sessionmaker(autocommit=False,
+engine      = create_engine('sqlite:///database.sqlite3', convert_unicode=True)
+db_session  = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
 
@@ -46,7 +46,7 @@ class Pet(Base):
     user_id         = Column(Integer, ForeignKey('user.id'))
     user            = relationship("User", back_populates="pets")
     url_avatar      = Column(String)
-    
+
 class DBHelper():
     @staticmethod
     def fast_commit(instance=None):
