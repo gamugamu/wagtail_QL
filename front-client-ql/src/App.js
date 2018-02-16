@@ -1,18 +1,28 @@
+//react
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+// client side
+import {s_pushpma} from './Service.js'
+import {PmaType0} from './Component_pma.js'
 
 class App extends Component {
+  // à déplacer dans controller.
+  validatePma(pma){
+    if(this.pmaType0.state.image !== null){
+      s_pushpma("dummy-title", this.pmaType0.state.image[0]);
+    }
+  };
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <p className="App-intro"></p>
+        <PmaType0
+          ref         = {(node) => { this.pmaType0 = node; }}
+          onValidate  = {()     => this.validatePma()}
+        />
       </div>
     );
   }
