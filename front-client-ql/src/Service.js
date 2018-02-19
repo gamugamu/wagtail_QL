@@ -15,7 +15,18 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-client.query({ query: gql`{allUsers{id}}`}).then(console.log);
+//client.query({ query: gql`{allUsers{id}}`}).then(console.log);
+
+client.mutate({
+  mutation: gql`
+  mutation mutation {
+    createUser(addPet: {name: "petiboo"}, name: "saucisse") {
+    user {
+      id
+      name
+      }
+    }
+  }`}).then(console.log);
 
 var axios = require('axios');
 
