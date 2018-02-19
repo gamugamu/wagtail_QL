@@ -23,3 +23,13 @@ mutation myMutation {
   }
   }
 }
+
+query pma{
+allPmahome{
+  title
+  caption
+  id
+  dateStart
+  dateEnd
+}
+}

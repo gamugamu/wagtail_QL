@@ -3,7 +3,7 @@ import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from models import db_session, User as UserModel, DBHelper, Pet as PetModel, Pma_home as Pma_homeModel, Pma_base
-from test import synch_from_default_bucket
+from dateutil import parser
 
 class Pet(SQLAlchemyObjectType):
     class Meta:
@@ -21,9 +21,9 @@ class PetField(graphene.InputObjectType):
 def helper_create_pet(pet_field, user):
     pet = PetModel(name=pet_field.name)
 
-    if pet_field.link_uuid_avatar is not None:
-        path            = synch_from_default_bucket(pet_field.link_uuid_avatar, "pet_name")
-        pet.url_avatar  = path
+    #if pet_field.link_uuid_avatar is not None:
+    #    path            = synch_from_default_bucket(pet_field.link_uuid_avatar, "pet_name")
+    #    pet.url_avatar  = path
 
     pet.user = user
 
@@ -39,16 +39,47 @@ def query_id_by_className(cls_name, id):
 
     return obj
 
-#################################################
+def map_value_from_input(obj, input):
+    for attr, value in input.__dict__.iteritems():
+        if value is not None:
+            setattr(obj, attr, value)
+
+    return obj
+
+def date_duration_validation(obj, input):
+    if input.date_start is not None:
+        obj.date_start = parser.parse(input.date_start)
+
+    if input.date_end is not None:
+        obj.date_end = parser.parse(input.date_end)
+
+    # TODO, check overlap and date validity
+
+    return obj
+
+#########@@@######### BASE ######################
+
+class Category_language(graphene.Enum):
+    FR = 0
+    ES = 1
+    IT = 2
+
+class Pma_base_input(graphene.InputObjectType):
+    date_start      = graphene.String()
+    date_end        = graphene.String()
+    id              = graphene.Int()
+    category        = Category_language()
+
+################### HOME_PMA #####################
+
 class Pma_home(SQLAlchemyObjectType):
     class Meta:
         model = Pma_homeModel
 
-class Pma_home_input(graphene.InputObjectType):
+class Pma_home_input(Pma_base_input):
     title           = graphene.String(required=True)
     caption         = graphene.String(required=True)
     url_pma_image   = graphene.String()
-    id              = graphene.Int()
 
 class Mutate_Pma_home(graphene.Mutation):
     class Arguments:
@@ -58,14 +89,12 @@ class Mutate_Pma_home(graphene.Mutation):
 
     @staticmethod
     def mutate(self, info, pma_data=None):
-        #****
         pma = query_id_by_className("Pma_homeModel", pma_data.id)
-        #****
-        pma.title           = pma_data.title
-        pma.caption         = pma_data.caption
-        pma.url_pma_image   = pma_data.url_pma_image
+        pma = map_value_from_input(pma, pma_data)
+        pma = date_duration_validation(pma, pma_data)
 
         DBHelper.fast_commit(pma)
+
         return Mutate_Pma_home(pma=pma)
 
 ###################################################
@@ -94,7 +123,6 @@ class CreateUser(graphene.Mutation):
     @staticmethod
     def mutate(self, info, name, add_pet=None, file=None):
         user = UserModel(name=name)
-        print "CONTEXT----- ", info, file
 
         if add_pet is not None:
             helper_create_pet(add_pet, user)
