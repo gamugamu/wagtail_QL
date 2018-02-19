@@ -47,6 +47,20 @@ class Pet(Base):
     user            = relationship("User", back_populates="pets")
     url_avatar      = Column(String)
 
+class Pma_base(Base):
+    __tablename__   = 'pmabase'
+    id              = Column(Integer, primary_key=True)
+    __mapper_args__ = {
+        'polymorphic_identity':'employee'
+    }
+
+class Pma_home(Pma_base):
+    __mapper_args__ = {'polymorphic_identity': 'pmahome'}
+
+    title           = Column(String)
+    caption         = Column(String)
+    url_pma_image   = Column(String)
+
 class DBHelper():
     @staticmethod
     def fast_commit(instance=None):

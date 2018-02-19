@@ -2,7 +2,7 @@
 import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from models import db_session, User as UserModel, DBHelper, Pet as PetModel
+from models import db_session, User as UserModel, DBHelper, Pet as PetModel, Pma_home as Pma_homeModel, Pma_base
 from test import synch_from_default_bucket
 
 class Pet(SQLAlchemyObjectType):
@@ -27,6 +27,49 @@ def helper_create_pet(pet_field, user):
 
     pet.user = user
 
+def query_id_by_className(cls_name, id):
+    cls = eval(cls_name)
+    obj = None
+
+    if id is not None:
+        obj = db_session.query(cls).filter(cls.id == id).first()
+    # ! else
+    if obj is None:
+        obj = cls()
+
+    return obj
+
+#################################################
+class Pma_home(SQLAlchemyObjectType):
+    class Meta:
+        model = Pma_homeModel
+
+class Pma_home_input(graphene.InputObjectType):
+    title           = graphene.String(required=True)
+    caption         = graphene.String(required=True)
+    url_pma_image   = graphene.String()
+    id              = graphene.Int()
+
+class Mutate_Pma_home(graphene.Mutation):
+    class Arguments:
+        pma_data = Pma_home_input(required=True)
+
+    pma = graphene.Field(Pma_home)
+
+    @staticmethod
+    def mutate(self, info, pma_data=None):
+        #****
+        pma = query_id_by_className("Pma_homeModel", pma_data.id)
+        #****
+        pma.title           = pma_data.title
+        pma.caption         = pma_data.caption
+        pma.url_pma_image   = pma_data.url_pma_image
+
+        DBHelper.fast_commit(pma)
+        return Mutate_Pma_home(pma=pma)
+
+###################################################
+
 class AddNewPet(graphene.Mutation):
     class Arguments:
         add_pet     = PetField(required=True)
@@ -48,8 +91,10 @@ class CreateUser(graphene.Mutation):
 
     user = graphene.Field(lambda: User)
 
-    def mutate(self, info, name, add_pet=None):
+    @staticmethod
+    def mutate(self, info, name, add_pet=None, file=None):
         user = UserModel(name=name)
+        print "CONTEXT----- ", info, file
 
         if add_pet is not None:
             helper_create_pet(add_pet, user)
@@ -58,14 +103,20 @@ class CreateUser(graphene.Mutation):
         return CreateUser(user=user)
 
 class Query(graphene.ObjectType):
-    all_users = graphene.List(User)
+    all_users   = graphene.List(User)
+    all_pmaHome = graphene.List(Pma_home)
 
     def resolve_all_users(self, info, **args):
         query = User.get_query(info)  # SQLAlchemy query
         return query.all()
 
+    def resolve_all_pmaHome(self, info, **args):
+        query = Pma_home.get_query(info)  # SQLAlchemy query
+        return query.all()
+
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     add_new_pet = AddNewPet.Field()
+    mutate_Pma_home = Mutate_Pma_home.Field()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

@@ -5,3 +5,21 @@ mutation myMutation {
     }
   }
 }
+
+mutation myMutation {
+  createUser(addPet: {name: "petiboo"}, name: "saucisse", file: "fsfds") {
+    user {
+      id
+      name
+    }
+  }
+}
+
+mutation myMutation {
+  newPmaHome(pmaData: {title: "new pma", caption: "lobulous"}) {
+   pma{
+    title
+    caption
+  }
+  }
+}
