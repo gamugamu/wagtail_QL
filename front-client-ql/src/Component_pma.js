@@ -5,57 +5,44 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 
-export class PmaType0 extends React.Component {
+// gere les collection de pma
+export class PmaCollectionManager extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      image: '',
-
+      pma: [],
     };
+    this.appendNewPma = this.appendNewPma.bind(this);
   }
 
-   render() {
-      return (
-         <div className="container z-depth-1 row pma-card-block">
-            <ul className="collection">
-              <li className="collection-item">
-                <div className="input-field">
-                  <input spellCheck="false" onChange={(e) => this.setState({ title: e.target.value }) } id="input_000" type="text" className="validate"></input>
-                  <label className="active" htmlFor="first_name2">Titre</label>
-                </div>
-              </li>
-              <li className="collection-item">
-              <div className="input-field">
-                <textarea id="textarea1v" spellCheck="false" className="materialize-textarea"></textarea>
-                <label htmlFor="icon_prefix">Légende</label>
-              </div>
-              </li>
-              <li className="collection-item">
-                <form action="#">
-                  <div className="file-field input-field">
-                    <div className="btn">
-                      <span>File</span>
-                      <input type="file" onChange={(e) => this.setState({ image : e.target.files }) }></input>
-                    </div>
-                    <div className="file-path-wrapper">
-                      <input className="file-path validate" type="text"></input>
-                    </div>
-                  </div>
-                  </form>
-              </li>
-              <li className="collection-item">
-                <a className="btn-floating btn-large waves-effect waves-light red" onClick={() => this.props.onValidate()} >
-                  <i className="material-icons">add</i>
-                </a>
-              </li>
-            </ul>
-          </div>
-      );
-   }
+  appendNewPma(){
+    var newPma = this.state.pma.slice();
+    newPma.push(PmaType1);
+    this.setState({pma:newPma})
+  }
+
+  onDelete(idx){
+    var pma = this.state.pma.slice();
+    pma.splice(0, 1);
+    console.log("index---> ", idx);
+    this.setState({pma:pma})
+  }
+
+  render() {
+    return (
+      <div>
+        <a className="waves-effect waves-light btn" onClick={this.appendNewPma}>new</a>
+        {this.state.pma.map((Item, index) => (
+          <Item
+            key       = {index}
+            onDelete  = {() => this.onDelete(index)}/>
+        ))}
+      </div>
+    );
+  }
 }
 
-
+// pma classique
 export class PmaType1 extends React.Component{
   constructor(props) {
     super(props);
@@ -147,15 +134,13 @@ export class PmaType1 extends React.Component{
                     </div>
                 </div>
                 <div className="col s6">
-                  <a className="btn-floating btn-large waves-effect waves-light red">
-                    save
-                  </a>
+                  <a className="btn-floating btn-small waves-effect waves-light gray" onClick={this.props.onDelete} ><i className="material-icons">clear</i></a>
                 </div> {/* col */}
               </div> {/* row */}
             </div> {/* card-action */}
           </div> {/* card-pmablock */}
         </div> {/* col */}
-      </div> 
+      </div>
       );
    }
 }

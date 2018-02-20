@@ -1,14 +1,14 @@
 //react
-import React, { Component } from 'react';
+import React, { Component} from 'react';
 import './App.css';
 // client side
 import {s_pushpma} from './Service.js'
-import {PmaType0, PmaType1} from './Component_pma.js'
+import {PmaType1, PmaCollectionManager} from './Component_pma.js'
 import Timeline from 'react-visjs-timeline'
 
 const options = {
 width: '100%',
-height: '60px',
+height: '100px',
 stack: false,
 showMajorLabels: true,
 showCurrentTime: true,
@@ -23,13 +23,13 @@ format: {
 };
 
 const items = [{
-  start: new Date(2010, 7, 15),
-  end: new Date(2010, 8, 2),  // end is optional
-  content: 'Trajectory A',
+  start: new Date(2018, 1, 27),
+  end: new Date(2018, 2, 28),  // end is optional
+  content: 'evenement',
+  style: "color: red; background-color: pink;"
 }]
 
 class App extends Component {
-  // à déplacer dans controller.
   validatePma(pma){
     if(this.pmaType0.state.image !== null){
       s_pushpma("dummy-title", this.pmaType0.state.image[0]);
@@ -42,12 +42,7 @@ class App extends Component {
         <header className="App-header">
         </header>
         <p className="App-intro"></p>
-
-        <PmaType0
-          ref         = {(node) => { this.pmaType0 = node; }}
-          onValidate  = {()     => this.validatePma()}
-        />
-        <PmaType1/>
+        <PmaCollectionManager/>
         <Timeline options={options} items={items}/>
       </div>
     );
