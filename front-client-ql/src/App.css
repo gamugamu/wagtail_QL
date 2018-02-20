@@ -26,3 +26,23 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/**/
+.pma-card-block{
+  width:400px;
+}
+
+.collection{
+  border: 0px;
+}
+
+.collection-item{
+  min-height: 70px;
+  border: 0!important;
+}
+
+/**/
+.dragAndDropArea{
+  height: 200px;
+  background-color: gray;
+}
