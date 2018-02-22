@@ -27,6 +27,8 @@ def helper_create_pet(pet_field, user):
 
     pet.user = user
 
+##################### helper ######################
+
 def query_id_by_className(cls_name, id):
     cls = eval(cls_name)
     obj = None
@@ -57,7 +59,7 @@ def date_duration_validation(obj, input):
 
     return obj
 
-#########@@@######### BASE ######################
+##################### BASE ######################
 
 class Category_language(graphene.Enum):
     FR = 0

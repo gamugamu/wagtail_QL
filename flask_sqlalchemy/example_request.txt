@@ -15,8 +15,9 @@ mutation myMutation {
   }
 }
 
+
 mutation myMutation {
-  newPmaHome(pmaData: {title: "new pma", caption: "lobulous"}) {
+  mutatePmaHome(pmaData: {title: "new pma", caption: "lobulous"}) {
    pma{
     title
     caption
