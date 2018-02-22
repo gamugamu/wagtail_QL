@@ -52,8 +52,8 @@ class Pet(Base):
 class Pma_base(Base):
     __tablename__   = 'pmabase'
     id              = Column(Integer, primary_key=True)
-    date_start      = Column(Date)
-    date_end        = Column(Date)
+    date_start      = Column(String) #Date
+    date_end        = Column(String) #Date
     category        = Column(Integer)
 
 class Pma_home(Pma_base):

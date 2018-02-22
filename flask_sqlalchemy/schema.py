@@ -4,6 +4,7 @@ from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from models import db_session, User as UserModel, DBHelper, Pet as PetModel, Pma_home as Pma_homeModel, Pma_base
 from dateutil import parser
+import time
 
 class Pet(SQLAlchemyObjectType):
     class Meta:
@@ -49,13 +50,15 @@ def map_value_from_input(obj, input):
     return obj
 
 def date_duration_validation(obj, input):
+    # TODO, check overlap and date validity
     if input.date_start is not None:
-        obj.date_start = parser.parse(input.date_start)
+        print "date", input.date_start, parser.parse(input.date_start)
+        obj.date_start = input.date_start
+        print "confirm ", obj.date_start
 
     if input.date_end is not None:
-        obj.date_end = parser.parse(input.date_end)
+        obj.date_end = input.date_end
 
-    # TODO, check overlap and date validity
 
     return obj
 
@@ -78,6 +81,18 @@ class Pma_home(SQLAlchemyObjectType):
     class Meta:
         model = Pma_homeModel
 
+    def resolve_date_start(self, info):
+        if self.date_start is None:
+            return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time()))
+        else:
+            return self.date_start
+
+    def resolve_date_end(self, info):
+        if self.date_end is None:
+            return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time()))
+        else:
+            return self.date_end
+
 class Pma_home_input(Pma_base_input):
     title           = graphene.String(required=True)
     caption         = graphene.String(required=True)
@@ -96,6 +111,9 @@ class Mutate_Pma_home(graphene.Mutation):
         pma = date_duration_validation(pma, pma_data)
 
         DBHelper.fast_commit(pma)
+
+        if pma.date_start is not None:
+            print"from DB", pma.date_start
 
         return Mutate_Pma_home(pma=pma)
 
