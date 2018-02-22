@@ -74,7 +74,7 @@ class Pma_base_input(graphene.InputObjectType):
     date_end        = graphene.String()
     id              = graphene.Int()
     category        = Category_language()
-
+    is_active       = graphene.Boolean()
 ################### HOME_PMA #####################
 
 class Pma_home(SQLAlchemyObjectType):

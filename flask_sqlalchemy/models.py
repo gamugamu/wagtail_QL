@@ -55,6 +55,7 @@ class Pma_base(Base):
     date_start      = Column(String) #Date
     date_end        = Column(String) #Date
     category        = Column(Integer)
+    is_active       = Column(Boolean, default=0)
 
 class Pma_home(Pma_base):
     title           = Column(String)
