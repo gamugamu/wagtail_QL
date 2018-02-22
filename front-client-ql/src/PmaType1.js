@@ -35,16 +35,19 @@ export class PmaType1 extends React.Component{
             category
           }
       }`}).then(({ data }) => {
+        console.log("***** ", data["allPmahome"]);
           callback(data["allPmahome"])
       });
   }
 
 // query mutate
   mutateFromActualState(){
+    console.log("res ", this.state.dateStart.format('MMMM Do YYYY, h:mm:ss a'));
 
     apollo_client.mutate({mutation: gql
-      `mutation mutation($title: String!, $caption: String!, $id: Int!){
-        mutatePmaHome(pmaData: {id:$id, title: $data['foo'], caption: $caption}) {
+      `mutation mutation($title: String!, $caption: String!, $id: Int!, $dateStart: String!, $dateEnd: String!){
+        mutatePmaHome(pmaData:
+          {id:$id, title: $title, caption: $caption, dateStart: $dateStart, dateEnd: $dateEnd}) {
           pma{
             title
             caption
@@ -54,7 +57,9 @@ export class PmaType1 extends React.Component{
       variables: {
         title: this.state.title,
         caption: this.state.caption,
-        id: this.state.id
+        id: this.state.id,
+        dateStart: this.state.dateStart.format(),
+        dateEnd: this.state.dateEnd.format(),
       },
     }).then(console.log);
 
@@ -62,15 +67,24 @@ export class PmaType1 extends React.Component{
 
 // display
   display(blob){
+  //  console.log("confirm? ->", blob.dateStart, moment(blob.dateStart), this.helper_date(moment(blob.dateStart)));
     this.setState({
         id:         blob.id,
         title:      blob.title,
         caption:    blob.caption,
-        dateStart:  moment(blob.dateStart),
-        dateEnd:    moment(blob.dateEnd)
+        dateStart:  this.helper_date(moment(blob.dateStart)),
+        dateEnd:    this.helper_date(moment(blob.dateEnd))
     })
   }
 
+  helper_date(date_){
+    console.log("isValid ", date_, date_.isValid());
+    if(!date_.isValid()){
+      return moment()
+    }else{
+      return date_
+    }
+  }
   // image callback
   onDrop(imageFiles){
     this.setState({
@@ -91,7 +105,7 @@ export class PmaType1 extends React.Component{
 
   handleChangeEnd(date) {
     this.setState({
-      endDate: date
+      dateEnd: date
     });
   }
 

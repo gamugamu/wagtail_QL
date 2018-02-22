@@ -4,14 +4,18 @@
   "private": true,
   "dependencies": {
     "apollo-boost": "^0.1.1",
+    "axios": "^0.18.0",
     "graphql": "^0.13.1",
     "moment": "^2.20.1",
     "react": "^16.2.0",
     "react-apollo": "^2.0.4",
     "react-datepicker": "^1.2.1",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.1",
-    "react-visjs-timeline": "^1.4.0"
+    "react-dropzone": "^4.2.8",
+    "react-global-configuration": "^1.2.1",
+    "react-scripts": "^1.1.1",
+    "react-visjs-timeline": "^1.4.0",
+    "vis": "^4.21.0"
   },
   "scripts": {
     "start": "react-scripts start",
