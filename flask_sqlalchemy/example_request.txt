@@ -5,3 +5,32 @@ mutation myMutation {
     }
   }
 }
+
+mutation myMutation {
+  createUser(addPet: {name: "petiboo"}, name: "saucisse", file: "fsfds") {
+    user {
+      id
+      name
+    }
+  }
+}
+
+
+mutation myMutation {
+  mutatePmaHome(pmaData: {title: "new pma", caption: "lobulous"}) {
+   pma{
+    title
+    caption
+  }
+  }
+}
+
+query pma{
+allPmahome{
+  title
+  caption
+  id
+  dateStart
+  dateEnd
+}
+}

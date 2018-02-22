@@ -14,16 +14,4 @@ def upload_to_default_bucket(file):
     blob.content_type = "image/jpeg"
 
     blob.upload_from_file(file)
-    return uuid_
-
-def synch_from_default_bucket(uid_file, file_name):
-    blob = bucket.get_blob("upload/" + uid_file)
-
-    if blob == None:
-        # Ne devrait pas si le user récupère le bon id.
-        return ""
-    else:
-        perm_blob = bucket.copy_blob(blob, bucket, new_name="upload/" + file_name + uid_file)
-        bucket.delete_blobs([blob])
-
-        return perm_blob.public_url
+    return blob.public_url

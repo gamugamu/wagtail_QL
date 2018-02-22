@@ -4,6 +4,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import (scoped_session, sessionmaker, relationship,
                             backref)
 from sqlalchemy.ext.declarative import declarative_base
+from enum import Enum
 
 engine      = create_engine('sqlite:///database.sqlite3', convert_unicode=True)
 db_session  = scoped_session(sessionmaker(autocommit=False,
@@ -46,6 +47,19 @@ class Pet(Base):
     user_id         = Column(Integer, ForeignKey('user.id'))
     user            = relationship("User", back_populates="pets")
     url_avatar      = Column(String)
+
+##########################
+class Pma_base(Base):
+    __tablename__   = 'pmabase'
+    id              = Column(Integer, primary_key=True)
+    date_start      = Column(Date)
+    date_end        = Column(Date)
+    category        = Column(Integer)
+
+class Pma_home(Pma_base):
+    title           = Column(String)
+    caption         = Column(String)
+    url_pma_image   = Column(String)
 
 class DBHelper():
     @staticmethod

@@ -1,51 +1,51 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export class PmaType0 extends React.Component {
+// gere les collection de pma
+export class PmaCollectionManager extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      image: '',
-
+      pma: [],
+      queries: ''
     };
+    this.appendNewPma = this.appendNewPma.bind(this);
+    this.onDelete     = this.onDelete.bind(this)
+    // display le nombre d'object de ce type
+    var _this = this
+    this.props.typePma.handleQuerieFindAllElmt(function(data){
+      _this.setState({
+          pma: data
+      })
+    })
   }
 
-   render() {
-      return (
-         <div className="container z-depth-1 row">
-            <ul className="collection">
-              <li className="collection-item">
-                <div className="input-field">
-                  <input onChange={(e) => this.setState({ title: e.target.value }) } id="input_000" type="text" className="validate"></input>
-                  <label className="active" htmlFor="first_name2">Titre</label>
-                </div>
-              </li>
-              <li className="collection-item">
-              <div className="input-field">
-                <input id="icon_prefix" type="text" className="validate"></input>
-                <label htmlFor="icon_prefix">First Name</label>
-              </div>
-              </li>
-              <li className="collection-item">
-                <form action="#">
-                  <div className="file-field input-field">
-                    <div className="btn">
-                      <span>File</span>
-                      <input type="file" onChange={(e) => this.setState({ image : e.target.files }) }></input>
-                    </div>
-                    <div className="file-path-wrapper">
-                      <input className="file-path validate" type="text"></input>
-                    </div>
-                  </div>
-                  </form>
-              </li>
-              <li className="collection-item">
-                <button className="btn waves-effect pink accent-2" type="submit" name="action" onClick={() => this.props.onValidate()}>Submit
-                  <i className="material-icons right">send</i>
-                </button>
-              </li>
-            </ul>
-          </div>
-      );
-   }
+  appendNewPma(){
+    var newPma = this.state.pma.slice();
+    newPma.push(this.props.typePma);
+    this.setState({pma:newPma})
+  }
+
+  onDelete(idx){
+    var pma = this.state.pma.slice();
+    pma.shift()
+    //  console.log("index---> ", this.refs['pma' + idx.toString()], mountNode);
+    this.setState({pma:pma})
+  }
+
+  render() {
+    return (
+      <div id="scroller-wrapper">
+        <div id="scroller">
+          <a className="waves-effect waves-light btn" onClick={this.appendNewPma}>new</a>
+          {this.state.pma.map((Item, index) => (
+            <this.props.typePma
+              key       = {index}
+              ref       = {(child) => { child.display(Item)}}
+              onDelete  = {() => this.onDelete(index)}
+            />
+            ))}
+        </div>
+      </div>
+    );
+  }
 }

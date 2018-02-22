@@ -26,3 +26,47 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/**/
+.pma-card-block{
+  width:400px;
+}
+
+.collection{
+  border: 0px;
+}
+
+.collection-item{
+  min-height: 70px;
+  border: 0!important;
+}
+
+/**/
+.dragAndDropArea{
+  height: 200px;
+  background-color: gray;
+}
+
+.scrollWidth{
+    width: auto;
+    height:210px;
+    border: 13px solid #bed5cd;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+#scroller-wrapper {
+    width: 100%;
+}
+
+#scroller {
+    height: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.oneLine{
+   display: inline-block;
+   white-space:nowrap;
+}

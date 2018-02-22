@@ -19,10 +19,10 @@ app.add_url_rule(
     '/graphql',
     view_func=GraphQLView.as_view(
         'graphql',
-        schema=schema,
-        graphiql=True, # for having the GraphiQL interface,
-        context_value={'session': db_session}
-    )
+        schema          = schema,
+        graphiql        = True, # for having the GraphiQL interface,
+        context_value   = {'session': db_session},
+    ),
 )
 
 @app.route('/testservice')
@@ -39,7 +39,6 @@ def upload_file():
         status      = 200,
         mimetype    = 'application/json'
     )
-
     return response
 
 #lifecycle
