@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React from 'react';
 
 // gere les collection de pma
 export class PmaCollectionManager extends React.Component{
@@ -13,7 +13,6 @@ export class PmaCollectionManager extends React.Component{
     // display le nombre d'object de ce type
     var _this = this
     this.props.typePma.handleQuerieFindAllElmt(function(data){
-      console.log("data", data);
       _this.setState({
           pma: data
       })
@@ -21,7 +20,6 @@ export class PmaCollectionManager extends React.Component{
   }
 
   appendNewPma(){
-    console.log("--->", this.props, this.props.queries);
     var newPma = this.state.pma.slice();
     newPma.push(this.props.typePma);
     this.setState({pma:newPma})

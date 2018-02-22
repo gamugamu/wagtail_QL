@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React from 'react';
 import Dropzone from  'react-dropzone';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
@@ -11,16 +11,18 @@ export class PmaType1 extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      blob: {},
       title: '',
+      id: 0,
       imageFiles: [],
       dateStart: moment(),
       dateEnd: moment()
     };
-    this.handleChangeStart  = this.handleChangeStart.bind(this);
-    this.handleChangeEnd    = this.handleChangeEnd.bind(this);
+    this.handleChangeStart      = this.handleChangeStart.bind(this);
+    this.handleChangeEnd        = this.handleChangeEnd.bind(this);
+    this.mutateFromActualState  = this.mutateFromActualState.bind(this);
   }
 
+// query display
   static handleQuerieFindAllElmt(callback){
     apollo_client.query({ query: gql
       `{
@@ -37,9 +39,31 @@ export class PmaType1 extends React.Component{
       });
   }
 
+// query mutate
+  mutateFromActualState(){
+
+    apollo_client.mutate({mutation: gql
+      `mutation mutation($title: String!, $caption: String!, $id: Int!){
+        mutatePmaHome(pmaData: {id:$id, title: $data['foo'], caption: $caption}) {
+          pma{
+            title
+            caption
+          }
+        }
+      }`,
+      variables: {
+        title: this.state.title,
+        caption: this.state.caption,
+        id: this.state.id
+      },
+    }).then(console.log);
+
+  }
+
+// display
   display(blob){
-    console.log("__>", blob.caption);
     this.setState({
+        id:         blob.id,
         title:      blob.title,
         caption:    blob.caption,
         dateStart:  moment(blob.dateStart),
@@ -60,7 +84,6 @@ export class PmaType1 extends React.Component{
 
   // date callback
   handleChangeStart(date) {
-    console.log("date", date.format('DD/MM/YYYY'));
     this.setState({
       dateStart: date
     });
@@ -93,7 +116,7 @@ export class PmaType1 extends React.Component{
                 <label className="active" htmlFor="first_name2">Titre</label>
               </div>
               <div className="input-field">
-                <textarea id="textarea1v" value={this.state.caption} spellCheck="false" className="materialize-textarea"></textarea>
+                <textarea id="textarea1v" value={this.state.caption} onChange={(e) => this.setState({ caption: e.target.value }) } spellCheck="false" className="materialize-textarea"></textarea>
                 <label htmlFor="icon_prefix">Légende</label>
               </div>
               <DatePicker
@@ -130,6 +153,7 @@ export class PmaType1 extends React.Component{
                     </div>
                 </div>
                 <div className="col s6">
+                <a className="btn-floating btn-small waves-effect waves-light gray" onClick={this.mutateFromActualState} ><i className="material-icons">save</i></a>
                   <a className="btn-floating btn-small waves-effect waves-light gray" onClick={this.props.onDelete} ><i className="material-icons">clear</i></a>
                 </div> {/* col */}
               </div> {/* row */}
