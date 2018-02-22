@@ -11,7 +11,7 @@ import configuration from './config';
 
 config.set(configuration);
 
-const client = new ApolloClient({
+export const apollo_client = new ApolloClient({
   link: new HttpLink({ uri: config.get('url_servicePma_graphql')}),
   cache: new InMemoryCache(),
 });
@@ -28,8 +28,8 @@ client.mutate({
     }
   }`,  variables: { file } }).then(console.log);
 */
-
-client.mutate({mutation: gql
+/*
+apollo_client.mutate({mutation: gql
   `mutation mutation{
     mutatePmaHome(pmaData: {title: "new pma from appollo", caption: "legend"}) {
       pma{
@@ -38,18 +38,7 @@ client.mutate({mutation: gql
       }
     }
   }`}).then(console.log);
-
-client.query({ query: gql
-  `{
-      allPmahome{
-        title
-        caption
-        id
-        dateStart
-        dateEnd
-        category
-      }
-  }`}).then(console.log);
+*/
 /*
 client.mutate({
   mutation: gql`
@@ -63,6 +52,7 @@ client.mutate({
   }`,  variables: { file } }).then(console.log);
 */
 
+// a supprimer
 export function s_pushpma(title, image){
     var formData = new FormData();
     formData.append("file", image);
