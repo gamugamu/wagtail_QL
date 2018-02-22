@@ -55,3 +55,18 @@
     overflow-y: hidden;
     white-space: nowrap;
 }
+
+#scroller-wrapper {
+    width: 100%;
+}
+
+#scroller {
+    height: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.oneLine{
+   display: inline-block;
+   white-space:nowrap;
+}

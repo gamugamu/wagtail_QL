@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component} from 'react';
+import ReactDOM from 'react-dom';
+
 import Dropzone from  'react-dropzone';
 
 import DatePicker from 'react-datepicker';
@@ -13,6 +15,7 @@ export class PmaCollectionManager extends React.Component{
       pma: [],
     };
     this.appendNewPma = this.appendNewPma.bind(this);
+    this.onDelete = this.onDelete.bind(this)
   }
 
   appendNewPma(){
@@ -23,20 +26,25 @@ export class PmaCollectionManager extends React.Component{
 
   onDelete(idx){
     var pma = this.state.pma.slice();
-    pma.splice(0, 1);
-    console.log("index---> ", idx);
+    // note react a du mal a retirer un objet référencé dans le tableau.
+    pma.shift()
+  //  console.log("index---> ", this.refs['pma' + idx.toString()], mountNode);
     this.setState({pma:pma})
   }
 
   render() {
     return (
-      <div>
-        <a className="waves-effect waves-light btn" onClick={this.appendNewPma}>new</a>
-        {this.state.pma.map((Item, index) => (
-          <Item
-            key       = {index}
-            onDelete  = {() => this.onDelete(index)}/>
-        ))}
+      <div id="scroller-wrapper">
+        <div id="scroller">
+          <a className="waves-effect waves-light btn" onClick={this.appendNewPma}>new</a>
+          {this.state.pma.map((Item, index) => (
+            <Item
+              key       = {index}
+              ref       = {"pma" + index.toString()}
+              onDelete  = {() => this.onDelete(index)}
+              title     = {index}/>
+            ))}
+        </div>
       </div>
     );
   }
@@ -47,7 +55,7 @@ export class PmaType1 extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
+      title: 'default',
       imageFiles: [],
       startDate: moment(),
       endDate: moment()
@@ -78,7 +86,7 @@ export class PmaType1 extends React.Component{
 
    render() {
       return (
-      <div className="row">
+      <div className="row oneLine">
         <div className="col">
           <div className="card pma-card-block">
             <div className="card-image">
@@ -93,7 +101,7 @@ export class PmaType1 extends React.Component{
             </div> {/* card-image */}
             <div className="card-content">
               <div className="input-field">
-                <input spellCheck="false" onChange={(e) => this.setState({ title: e.target.value }) } id="input_000" type="text" className="validate"></input>
+                <input spellCheck="false" value={this.props.title} onChange={(e) => this.setState({ title: e.target.value }) } id="input_000" type="text" className="validate"></input>
                 <label className="active" htmlFor="first_name2">Titre</label>
               </div>
               <div className="input-field">

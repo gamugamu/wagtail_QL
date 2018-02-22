@@ -16,8 +16,40 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-client.query({ query: gql`{allUsers{id}}`}).then(console.log);
+/*
+client.mutate({
+  mutation: gql`
+  mutation mutation {
+    createUser(addPet: {name: "petiboo"}, name: "saucisse") {
+    user {
+      id
+      name
+      }
+    }
+  }`,  variables: { file } }).then(console.log);
+*/
 
+client.mutate({mutation: gql
+  `mutation mutation{
+    mutatePmaHome(pmaData: {title: "new pma from appollo", caption: "legend"}) {
+      pma{
+        title
+        caption
+      }
+    }
+  }`}).then(console.log);
+
+client.query({ query: gql
+  `{
+      allPmahome{
+        title
+        caption
+        id
+        dateStart
+        dateEnd
+        category
+      }
+  }`}).then(console.log);
 /*
 client.mutate({
   mutation: gql`
