@@ -14,6 +14,7 @@ export class PmaType1 extends React.Component{
       title: '',
       id: 0,
       imageFiles: [],
+      isActive: false,
       dateStart: moment(),
       dateEnd: moment()
     };
@@ -27,27 +28,25 @@ export class PmaType1 extends React.Component{
     apollo_client.query({ query: gql
       `{
           allPmahome{
+            id
             title
             caption
-            id
+            isActive
             dateStart
             dateEnd
             category
           }
       }`}).then(({ data }) => {
-        console.log("***** ", data["allPmahome"]);
           callback(data["allPmahome"])
       });
   }
 
 // query mutate
   mutateFromActualState(){
-    console.log("res ", this.state.dateStart.format('MMMM Do YYYY, h:mm:ss a'));
-
     apollo_client.mutate({mutation: gql
-      `mutation mutation($title: String!, $caption: String!, $id: Int!, $dateStart: String!, $dateEnd: String!){
+      `mutation mutation($title: String!, $caption: String!, $id: Int!, $dateStart: String!, $dateEnd: String!, $isActive: Boolean!){
         mutatePmaHome(pmaData:
-          {id:$id, title: $title, caption: $caption, dateStart: $dateStart, dateEnd: $dateEnd}) {
+          {id:$id, title: $title, caption: $caption, dateStart: $dateStart, dateEnd: $dateEnd, isActive: $isActive}) {
           pma{
             title
             caption
@@ -58,11 +57,11 @@ export class PmaType1 extends React.Component{
         title: this.state.title,
         caption: this.state.caption,
         id: this.state.id,
+        isActive: this.state.isActive,
         dateStart: this.state.dateStart.format(),
         dateEnd: this.state.dateEnd.format(),
       },
     }).then(console.log);
-
   }
 
 // display
@@ -72,13 +71,13 @@ export class PmaType1 extends React.Component{
         id:         blob.id,
         title:      blob.title,
         caption:    blob.caption,
+        isActive:   blob.isActive,
         dateStart:  this.helper_date(moment(blob.dateStart)),
         dateEnd:    this.helper_date(moment(blob.dateEnd))
     })
   }
 
   helper_date(date_){
-    console.log("isValid ", date_, date_.isValid());
     if(!date_.isValid()){
       return moment()
     }else{
@@ -161,7 +160,7 @@ export class PmaType1 extends React.Component{
                  <div className="col s6">
                     <div className="switch">
                       <label>
-                      <input type="checkbox"></input>
+                      <input type="checkbox" checked={this.state.isActive} onChange={(e) => this.setState({ isActive: !this.state.isActive }) }></input>
                       <span className="lever"></span>
                       </label>
                     </div>
