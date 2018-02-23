@@ -47,16 +47,13 @@ export class PmaType1 extends React.Component{
 // query mutate
   mutateFromActualState(){
     var _this = this
-    console.log("****", _.isEqual(this.state.imageFiles, this.state.imageCmpFiles));
     if(!_.isEqual(this.state.imageFiles, this.state.imageCmpFiles)){
       //TODO! pas safe et asynchrone + FOR boucle
-      console.log("perform update image");
       uploadfile(this.state.imageFiles[0], function(url, error){
         // note: Js ne sais pas décorer des fonctions.
         makeMutation(_this, url)
       });
     }else{
-      console.log("perform simple update");
       makeMutation(this)
     }
 
