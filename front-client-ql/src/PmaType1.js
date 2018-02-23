@@ -3,8 +3,9 @@ import Dropzone from  'react-dropzone';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
-import {apollo_client} from './Service.js'
+import {apollo_client, uploadfile} from './Service.js'
 import gql from 'graphql-tag'
+import _ from 'underscore'
 
 // pma classique
 export class PmaType1 extends React.Component{
@@ -14,6 +15,7 @@ export class PmaType1 extends React.Component{
       title: '',
       id: 0,
       imageFiles: [],
+      imageCmpFiles: [],
       isActive: false,
       dateStart: moment(),
       dateEnd: moment()
@@ -35,6 +37,7 @@ export class PmaType1 extends React.Component{
             dateStart
             dateEnd
             category
+            urlPmaImage
           }
       }`}).then(({ data }) => {
           callback(data["allPmahome"])
@@ -43,37 +46,59 @@ export class PmaType1 extends React.Component{
 
 // query mutate
   mutateFromActualState(){
-    apollo_client.mutate({mutation: gql
-      `mutation mutation($title: String!, $caption: String!, $id: Int!, $dateStart: String!, $dateEnd: String!, $isActive: Boolean!){
-        mutatePmaHome(pmaData:
-          {id:$id, title: $title, caption: $caption, dateStart: $dateStart, dateEnd: $dateEnd, isActive: $isActive}) {
-          pma{
-            title
-            caption
-          }
-        }
-      }`,
-      variables: {
-        title: this.state.title,
-        caption: this.state.caption,
-        id: this.state.id,
-        isActive: this.state.isActive,
-        dateStart: this.state.dateStart.format(),
-        dateEnd: this.state.dateEnd.format(),
-      },
-    }).then(console.log);
+    var _this = this
+    console.log("****", _.isEqual(this.state.imageFiles, this.state.imageCmpFiles));
+    if(!_.isEqual(this.state.imageFiles, this.state.imageCmpFiles)){
+      //TODO! pas safe et asynchrone + FOR boucle
+      console.log("perform update image");
+      uploadfile(this.state.imageFiles[0], function(url, error){
+        // note: Js ne sais pas décorer des fonctions.
+        makeMutation(_this, url)
+      });
+    }else{
+      console.log("perform simple update");
+      makeMutation(this)
+    }
+
+    function makeMutation(_this, urlImage = null){
+      apollo_client.mutate({mutation: gql
+        `mutation mutation(
+          $title: String!, $caption: String!, $id: Int!, $dateStart: String!,
+          $dateEnd: String!, $isActive: Boolean!, $urlPmaImage: String){
+            mutatePmaHome(pmaData:
+              {id:$id, title: $title, caption: $caption, dateStart: $dateStart,
+                dateEnd: $dateEnd, isActive: $isActive, urlPmaImage: $urlPmaImage}) {
+                pma{
+                  id
+                }
+              }
+            }`,
+          variables: {
+            title:      _this.state.title,
+            caption:    _this.state.caption,
+            id:         _this.state.id,
+            isActive:   _this.state.isActive,
+            dateStart:  _this.state.dateStart.format(),
+            dateEnd:    _this.state.dateEnd.format(),
+            urlPmaImage: urlImage
+          },
+        }).then(({ data }) => {
+            console.log("*done", data );
+        });;
+    }
   }
 
 // display
   display(blob){
-  //  console.log("confirm? ->", blob.dateStart, moment(blob.dateStart), this.helper_date(moment(blob.dateStart)));
     this.setState({
-        id:         blob.id,
-        title:      blob.title,
-        caption:    blob.caption,
-        isActive:   blob.isActive,
-        dateStart:  this.helper_date(moment(blob.dateStart)),
-        dateEnd:    this.helper_date(moment(blob.dateEnd))
+        id:             blob.id,
+        title:          blob.title,
+        caption:        blob.caption,
+        isActive:       blob.isActive,
+        dateStart:      this.helper_date(moment(blob.dateStart)),
+        dateEnd:        this.helper_date(moment(blob.dateEnd)),
+        imageFiles:     [{"preview" : blob.urlPmaImage}],
+        imageCmpFiles:  [{"preview" : blob.urlPmaImage}],
     })
   }
 

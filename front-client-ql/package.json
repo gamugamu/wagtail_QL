@@ -15,6 +15,7 @@
     "react-global-configuration": "^1.2.1",
     "react-scripts": "^1.1.1",
     "react-visjs-timeline": "^1.4.0",
+    "underscore": "^1.8.3",
     "vis": "^4.21.0"
   },
   "scripts": {

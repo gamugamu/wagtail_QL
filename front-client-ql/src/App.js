@@ -1,8 +1,6 @@
 //react
 import React, { Component} from 'react';
 import './App.css';
-// client side
-import {s_pushpma} from './Service.js'
 
 import {PmaCollectionManager} from './Component_pma.js'
 import {PmaType1} from './PmaType1.js'
@@ -33,12 +31,6 @@ const items = [{
 }]
 
 class App extends Component {
-  validatePma(pma){
-    if(this.pmaType0.state.image !== null){
-      s_pushpma("dummy-title", this.pmaType0.state.image[0]);
-    }
-  };
-
   render() {
     return (
       <div className="App">

@@ -10,61 +10,18 @@ import configuration from './config';
 
 config.set(configuration);
 
+// graphQL
 export const apollo_client = new ApolloClient({
   link: new HttpLink({ uri: config.get('url_servicePma_graphql')}),
   cache: new InMemoryCache(),
 });
 
-/*
-client.mutate({
-  mutation: gql`
-  mutation mutation {
-    createUser(addPet: {name: "petiboo"}, name: "saucisse") {
-    user {
-      id
-      name
-      }
-    }
-  }`,  variables: { file } }).then(console.log);
-*/
-/*
-apollo_client.mutate({mutation: gql
-  `mutation mutation{
-    mutatePmaHome(pmaData: {title: "new pma from appollo", caption: "legend"}) {
-      pma{
-        title
-        caption
-      }
-    }
-  }`}).then(console.log);
-*/
-/*
-client.mutate({
-  mutation: gql`
-  mutation mutation {
-    createUser(addPet: {name: "petiboo"}, name: "saucisse") {
-    user {
-      id
-      name
-      }
-    }
-  }`,  variables: { file } }).then(console.log);
-*/
+// file upload
+export function uploadfile(image, callback){
+    var file = new FormData();
+    file.append("file", image);
 
-// a supprimer
-export function s_pushpma(title, image){
-    var formData = new FormData();
-    formData.append("file", image);
-    console.log("will upload");
-    uploadfile(formData, function(formData, error){
-      console.log("response.?", formData, error);
-    });
-}
-
-// private
-var axios = require('axios');
-
-function uploadfile(file, callback) {
+    var axios = require('axios');
     axios.post(config.get('url_servicePma_uploadfile'), file).then(function (response) {
         callback(response.data["file_id"], null);
     }).catch(function (error) {
