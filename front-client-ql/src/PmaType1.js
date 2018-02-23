@@ -8,7 +8,7 @@ import gql from 'graphql-tag'
 import _ from 'underscore'
 
 // pma classique
-export class PmaType1 extends React.Component{
+export class Pmatype1 extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
@@ -25,11 +25,19 @@ export class PmaType1 extends React.Component{
     this.mutateFromActualState  = this.mutateFromActualState.bind(this);
   }
 
+  componentDidMount(){
+    this.display(this.props.pma)
+    // l'update ne peut pas se faire de manière asynchrone. Le timer n'est pas encore crée.
+    setTimeout(function() {
+      this.props.onDateChange(this.state, /*performUpdate*/ true)
+    }.bind(this), 100);
+  }
+
 // query display
   static handleQuerieFindAllElmt(callback){
-    apollo_client.query({ query: gql
-      `{
-          allPmahome{
+    console.log("redisplay+++++++");
+    apollo_client.query({ query: gql`
+      {allPmahome{
             id
             title
             caption
@@ -58,8 +66,10 @@ export class PmaType1 extends React.Component{
     }
 
     function makeMutation(_this, urlImage = null){
-      apollo_client.mutate({mutation: gql
-        `mutation mutation(
+      console.log("mutate", _this.state.dateStart.format());
+
+      apollo_client.mutate({mutation: gql`
+        mutation mutation(
           $title: String!, $caption: String!, $id: Int!, $dateStart: String!,
           $dateEnd: String!, $isActive: Boolean!, $urlPmaImage: String){
             mutatePmaHome(pmaData:
@@ -122,12 +132,20 @@ export class PmaType1 extends React.Component{
     this.setState({
       dateStart: date
     });
+    // setState est asynchronuous
+    setTimeout(function() {
+      this.props.onDateChange(this.state, /*performUpdate*/ true)
+    }.bind(this), 100);
   }
 
   handleChangeEnd(date) {
     this.setState({
       dateEnd: date
     });
+    // setState est asynchronuous
+    setTimeout(function() {
+      this.props.onDateChange(this.state, /*performUpdate*/ true)
+    }.bind(this), 100);
   }
 
    render() {
@@ -142,7 +160,7 @@ export class PmaType1 extends React.Component{
                   accept          = "image/jpeg,image/jpg,image/tiff,image/gif,image/png"
                   multiple        = {false}
                   onDropRejected  = {this.handleDropRejected}>
-                  <div>{this.state.imageFiles.map((file, idx) => <img className="dragAndDropArea" src={file.preview} key={'k' + idx}/> )}</div>
+                  <div>{this.state.imageFiles.map((file, idx) => <img className="dragAndDropArea" src={file.preview} key={'k' + idx} alt=""/> )}</div>
               </Dropzone>
             </div> {/* card-image */}
             <div className="card-content">
@@ -159,7 +177,6 @@ export class PmaType1 extends React.Component{
                 selectsStart
                 showTimeSelect
                 startDate       = {this.state.dateStart}
-                endDate         = {this.state.dateEnd}
                 onChange        = {this.handleChangeStart}
                 timeFormat      = "HH:mm"
                 timeIntervals   = {15}
@@ -169,7 +186,6 @@ export class PmaType1 extends React.Component{
                 selected        = {this.state.dateEnd}
                 selectsEnd
                 showTimeSelect
-                startDate       = {this.state.dateStart}
                 endDate         = {this.state.dateEnd}
                 onChange        = {this.handleChangeEnd}
                 timeFormat      = "HH:mm"
@@ -180,12 +196,12 @@ export class PmaType1 extends React.Component{
             <div className="card-action">
               <div className="row">
                  <div className="col s6">
-                    <div className="switch">
-                      <label>
-                      <input type="checkbox" checked={this.state.isActive} onChange={(e) => this.setState({ isActive: !this.state.isActive }) }></input>
-                      <span className="lever"></span>
-                      </label>
-                    </div>
+                  <div className="switch">
+                     <label>
+                     <input type="checkbox" checked={this.state.isActive} onChange={(e) => this.setState({ isActive: !this.state.isActive }) }></input>
+                     <span className="lever"></span>
+                     </label>
+                  </div>
                 </div>
                 <div className="col s6">
                 <a className="btn-floating btn-small waves-effect waves-light gray" onClick={this.mutateFromActualState} ><i className="material-icons">save</i></a>

@@ -3,7 +3,7 @@ import React, { Component} from 'react';
 import './App.css';
 
 import {PmaCollectionManager} from './Component_pma.js'
-import {PmaType1} from './PmaType1.js'
+import {Pmatype1} from './PmaType1.js'
 
 class App extends Component {
   render() {
@@ -12,7 +12,7 @@ class App extends Component {
         <header className="App-header">
         </header>
         <p className="App-intro"></p>
-        <PmaCollectionManager queries={"q***"} typePma={PmaType1}/>
+        <PmaCollectionManager typePma={Pmatype1}/>
       </div>
     );
   }
