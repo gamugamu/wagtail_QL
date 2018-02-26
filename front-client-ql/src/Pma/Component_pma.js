@@ -12,16 +12,6 @@ export class PmaCollectionManager extends React.Component{
     this.onAddPma       = this.onAddPma.bind(this)
     this.onDeletePma    = this.onDeletePma.bind(this)
     this.updatePmaType  = this.updatePmaType.bind(this)
-
-    /*
-    // display le nombre d'object de ce type
-    var _this = this
-    this.props.typePma.handleQuerieFindAllElmt(function(data){
-      _this.setState({
-          pma: data
-      })
-    })
-    */
   }
 
   updatePmaType(pmaType){

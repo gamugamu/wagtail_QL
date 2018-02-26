@@ -1,15 +1,10 @@
 import React from 'react';
 import {Pmatype1} from './PmaType1.js'
+import Dropzone from  'react-dropzone';
 
 export class Pmatype2 extends Pmatype1{
   constructor(props) {
     super(props);
-    /*
-    this.state = {
-      imageFiles: [],
-      imageCmpFiles: []
-    };
-    */
   }
 
   render() {
@@ -30,5 +25,22 @@ export class Pmatype2 extends Pmatype1{
        </div> {/* col */}
      </div>
      );
+  }
+
+  // render Helper
+  /////////////////////////////////////////////////////
+  r_cardImageCollection = () => {
+    return(
+        <div className="card-image">
+          <Dropzone
+              className       = "dragAndDropArea"
+              onDrop          = {this.onDrop.bind(this)}
+              accept          = "image/jpeg,image/jpg,image/tiff,image/gif,image/png"
+              multiple        = {false}
+              onDropRejected  = {this.handleDropRejected}>
+              <div>{this.state.imageFiles.map((file, idx) => <img className="dragAndDropArea" src={file.preview} key={'k' + idx} alt=""/> )}</div>
+          </Dropzone>
+        </div>
+    )
   }
 }

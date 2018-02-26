@@ -41,9 +41,8 @@ export class Pmatype1 extends PmaBase{
   mutateFromActualState(){
     var _this = this
     if(!_.isEqual(this.state.imageFiles, this.state.imageCmpFiles)){
-      //TODO! pas safe et asynchrone + FOR boucle
+      // aux enfant de gérer le tableau. Par deefault, une simple image.
       uploadfile(this.state.imageFiles[0], function(url, error){
-        // note: Js ne sais pas décorer des fonctions.
         makeMutation(_this, url)
       });
     }else{
