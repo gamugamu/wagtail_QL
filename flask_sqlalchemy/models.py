@@ -15,18 +15,31 @@ Base = declarative_base()
 # We will need this for querying
 Base.query = db_session.query_property()
 
+##########################
 class Pma_base(Base):
     __tablename__   = 'pmabase'
     id              = Column(Integer, primary_key=True)
+    title           = Column(String)
+    caption         = Column(String)
     date_start      = Column(String) #Date
     date_end        = Column(String) #Date
     category        = Column(Integer)
     is_active       = Column(Boolean, default=0)
 
 class Pma_home(Pma_base):
-    title           = Column(String)
-    caption         = Column(String)
+    __tablename__   = 'pmahome'
+    id              = Column(Integer, ForeignKey('pmabase.id'), primary_key=True)
     url_pma_image   = Column(String)
+
+class Pma_gallery(Pma_base):
+    __tablename__   = 'pmagallery'
+    id              = Column(Integer, ForeignKey('pmabase.id'), primary_key=True)
+    url_pma_images = relationship("gallery")
+
+class gallery(Base):
+    __tablename__   = 'gallery'
+    id              = Column(Integer, primary_key=True)
+    parent_id       = Column(Integer, ForeignKey('pmabase.id'))
 
 class DBHelper():
     @staticmethod

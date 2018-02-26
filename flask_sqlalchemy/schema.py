@@ -2,7 +2,7 @@
 import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from models import db_session, Pma_home as Pma_homeModel, Pma_base
+from models import db_session, DBHelper, Pma_base as Pma_baseModel, Pma_home as Pma_homeModel, Pma_gallery as Pma_galleryModel
 from dateutil import parser
 import time
 
@@ -48,17 +48,17 @@ class Category_language(graphene.Enum):
     IT = 2
 
 class Pma_base_input(graphene.InputObjectType):
+    title           = graphene.String(required=True)
+    caption         = graphene.String(required=True)
     date_start      = graphene.String()
     date_end        = graphene.String()
     id              = graphene.Int()
     category        = Category_language()
     is_active       = graphene.Boolean()
 
-################### HOME_PMA #####################
-
-class Pma_home(SQLAlchemyObjectType):
+class Pma_base(SQLAlchemyObjectType):
     class Meta:
-        model = Pma_homeModel
+        model = Pma_baseModel
 
     def resolve_date_start(self, info):
         if self.date_start is None:
@@ -72,9 +72,13 @@ class Pma_home(SQLAlchemyObjectType):
         else:
             return self.date_end
 
+################### HOME_PMA #####################
+
+class Pma_home(Pma_base):
+    class Meta:
+        model = Pma_homeModel
+
 class Pma_home_input(Pma_base_input):
-    title           = graphene.String(required=True)
-    caption         = graphene.String(required=True)
     url_pma_image   = graphene.String()
 
 class Mutate_Pma_home(graphene.Mutation):
@@ -96,15 +100,49 @@ class Mutate_Pma_home(graphene.Mutation):
 
         return Mutate_Pma_home(pma=pma)
 
+################### GALLERY_PMA #####################
+class Pma_gallery(Pma_base):
+    class Meta:
+        model = Pma_galleryModel
+
+class Pma_gallery_input(Pma_base_input):
+    title           = graphene.String(required=True)
+    caption         = graphene.String(required=True)
+
+class Mutate_Pma_gallery(graphene.Mutation):
+    class Arguments:
+        pma_data = Pma_gallery_input(required=True)
+
+    pma = graphene.Field(Pma_gallery)
+
+    @staticmethod
+    def mutate(self, info, pma_data=None):
+        pma = query_id_by_className("Pma_galleryModel", pma_data.id)
+        pma = map_value_from_input(pma, pma_data)
+        pma = date_duration_validation(pma, pma_data)
+
+        DBHelper.fast_commit(pma)
+
+        if pma.date_start is not None:
+            print"from DB", pma.date_start
+
+        return Mutate_Pma_home(pma=pma)
+
 ###################################################
 class Query(graphene.ObjectType):
-    all_pmaHome = graphene.List(Pma_home)
+    all_pma_home     = graphene.List(Pma_home)
+    all_pma_gallery  = graphene.List(Pma_gallery)
 
-    def resolve_all_pmaHome(self, info, **args):
+    def resolve_all_pma_home(self, info, **args):
         query = Pma_home.get_query(info)  # SQLAlchemy query
         return query.all()
 
+    def resolve_all_pma_gallery(self, info, **args):
+        query = Pma_gallery.get_query(info)  # SQLAlchemy query
+        return query.all()
+
 class Mutation(graphene.ObjectType):
-    mutate_Pma_home = Mutate_Pma_home.Field()
+    mutate_Pma_home     = Mutate_Pma_home.Field()
+    mutate_Pma_gallery  = Mutate_Pma_gallery.Field()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
