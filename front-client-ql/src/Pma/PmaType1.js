@@ -5,7 +5,6 @@ import _ from 'underscore'
 import moment from 'moment';
 import {PmaBase} from './PmaBase.js'
 import Dropzone from  'react-dropzone';
-import update from 'react-addons-update'; // ES6
 
 // pma classique
 export class Pmatype1 extends PmaBase{
@@ -22,7 +21,7 @@ export class Pmatype1 extends PmaBase{
 // query display
   static handleQuerieFindAllElmt(callback){
     apollo_client.query({ query: gql`
-      {allPmahome{
+      {allPmaHome{
             id
             title
             caption
@@ -33,7 +32,7 @@ export class Pmatype1 extends PmaBase{
             urlPmaImage
           }
       }`}).then(({ data }) => {
-          callback(data["allPmahome"])
+          callback(data["allPmaHome"])
       });
   }
 

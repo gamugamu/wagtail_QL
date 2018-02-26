@@ -1,6 +1,5 @@
 import React from 'react';
 import {TimelinePma} from '../GUI/TimelinePma.js'
-import {Pmatype1} from './PmaType1.js'
 
 // gere les collection de pma
 export class PmaCollectionManager extends React.Component{

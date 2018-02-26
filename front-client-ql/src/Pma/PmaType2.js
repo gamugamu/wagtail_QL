@@ -1,11 +1,31 @@
 import React from 'react';
+import {apollo_client} from '../Services/Graph.js'
+import gql from 'graphql-tag'
 import {Pmatype1} from './PmaType1.js'
 import Dropzone from  'react-dropzone';
 
 export class Pmatype2 extends Pmatype1{
+  /*
   constructor(props) {
     super(props);
   }
+*/
+  // query display
+    static handleQuerieFindAllElmt(callback){
+      apollo_client.query({ query: gql`
+        {allPmaGallery{
+              id
+              title
+              caption
+              isActive
+              dateStart
+              dateEnd
+              category
+            }
+        }`}).then(({ data }) => {
+            callback(data["allPmaGallery"])
+        });
+    }
 
   render() {
      return (
