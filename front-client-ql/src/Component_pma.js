@@ -1,7 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Timeline from 'react-visjs-timeline'
-import moment from 'moment';
 
 const timelineOptions = {
   width:            '100%',
@@ -65,24 +63,18 @@ export class PmaCollectionManager extends React.Component{
   }
 
   renderTimeline(tag, dateStart, dateEnd, eventName=""){
-
     var _timeLineItems = this.state.timelineItems.slice();
-    //  this.setState({timelineItems: timeLineItems});
 
     if (tag !== null && this.state.timelineItems !== undefined){
       var timeLineIdx = -1;
-      // check for update. We're just finding the correcting idx either for update
-      // or ccreate a new composant.
+      // Update the timeline. Finding the correcting idx either for update
+      // or create a new period composant.
       for (var t in _timeLineItems){
-        console.log("compare tag", tag, _timeLineItems[t]['tag'] );
         if(_timeLineItems[t]['tag'] === tag){
-          timeLineIdx = _timeLineItems[t]['idx']
+          timeLineIdx = t
           break;
         }
       }
-
-      dateStart = moment(dateStart.format())
-      dateEnd   = moment(dateEnd.format())
 
       var timeLine = {
           start:    dateStart.toDate(),
@@ -94,19 +86,13 @@ export class PmaCollectionManager extends React.Component{
 
       // null then create
       if (timeLineIdx === -1 || undefined){
-        console.log("++++ pushed");
           _timeLineItems.push(timeLine)
-      }else{// not null, so update in the corresponding index
-        console.log("++++ from index", dateStart.format(), timeLine);
+      }else{// not null, update
           _timeLineItems[timeLineIdx] = timeLine;
       }
-    } /* if tag != 0 */
+    }
 
-    //  console.log("perform UPDATE start: ", dateStart.format(), "end: ", dateEnd.format());
-    //  var timeLineItems = this.state.timelineItems.slice();
-    //  timeLineItems.push(timeLine)
-        console.log("items", _timeLineItems);
-        this.setState({timelineItems: _timeLineItems});
+      this.setState({timelineItems: _timeLineItems});
   }
 
   render() {
