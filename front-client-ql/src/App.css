@@ -29,7 +29,7 @@
 
 /**/
 .pma-card-block{
-  width:400px;
+  width:350px;
 }
 
 .collection{
@@ -68,5 +68,42 @@
 
 .oneLine{
    display: inline-block;
-   white-space:nowrap;
+   white-space: nowrap;
+}
+
+.no-depth-float {
+    z-index: 0;
+}
+
+/* ---- */
+textarea.materialize-textarea{
+  min-height: 5px;
+}
+
+.card-action{
+  margin-top: -50px;
+  height: 70px;
+}
+
+.date-picto{
+  margin-left: -10px;
+  float: left;
+  margin-top: 10px;
+  font-size:1.5em;
+  color:Tomato
+}
+
+.date-picto{
+  margin-left: -10px;
+  float: left;
+  margin-top: 10px;
+  font-size:1.5em;
+}
+
+.date-picto.start{
+  color:Tomato;
+}
+
+.date-picto.end{
+  color:Gray;
 }

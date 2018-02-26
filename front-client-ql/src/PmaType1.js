@@ -35,7 +35,6 @@ export class Pmatype1 extends React.Component{
 
 // query display
   static handleQuerieFindAllElmt(callback){
-    console.log("redisplay+++++++");
     apollo_client.query({ query: gql`
       {allPmahome{
             id
@@ -172,28 +171,40 @@ export class Pmatype1 extends React.Component{
                 <textarea id="textarea1v" value={this.state.caption} onChange={(e) => this.setState({ caption: e.target.value }) } spellCheck="false" className="materialize-textarea"></textarea>
                 <label htmlFor="icon_prefix">Légende</label>
               </div>
-              <DatePicker
-                selected        = {this.state.dateStart}
-                selectsStart
-                showTimeSelect
-                startDate       = {this.state.dateStart}
-                onChange        = {this.handleChangeStart}
-                timeFormat      = "HH:mm"
-                timeIntervals   = {15}
-                dateFormat      = "DD-MMM HH:mm"
-              />
-              <DatePicker
-                selected        = {this.state.dateEnd}
-                selectsEnd
-                showTimeSelect
-                endDate         = {this.state.dateEnd}
-                onChange        = {this.handleChangeEnd}
-                timeFormat      = "HH:mm"
-                timeIntervals   = {15}
-                dateFormat      = "DD-MMM HH:mm"
-                />
+              <div className ="row">
+                <div className ="col s1">
+                    <i className="fas fa-clock date-picto start"></i>
+                </div>{/* column */}
+                <div className ="col s5">
+                      <DatePicker
+                        selected        = {this.state.dateStart}
+                        selectsStart
+                        showTimeSelect
+                        startDate       = {this.state.dateStart}
+                        onChange        = {this.handleChangeStart}
+                        timeFormat      = "HH:mm"
+                        timeIntervals   = {15}
+                        dateFormat      = "DD-MMM HH:mm"
+                      />
+                </div>{/* column */}
+                <div className ="col s1">
+                  <i className="fas fa-clock date-picto end"></i>
+                </div>{/* column */}
+                <div className ="col s5">
+                  <DatePicker
+                    selected        = {this.state.dateEnd}
+                    selectsEnd
+                    showTimeSelect
+                    endDate         = {this.state.dateEnd}
+                    onChange        = {this.handleChangeEnd}
+                    timeFormat      = "HH:mm"
+                    timeIntervals   = {15}
+                    dateFormat      = "DD-MMM HH:mm"
+                    />
+                  </div>{/* column */}
+                </div>{/* row */}
             </div> {/* card-content */}
-            <div className="card-action">
+            <div className="card-action blue-grey darken-1">
               <div className="row">
                  <div className="col s6">
                   <div className="switch">
@@ -204,8 +215,14 @@ export class Pmatype1 extends React.Component{
                   </div>
                 </div>
                 <div className="col s6">
-                <a className="btn-floating btn-small waves-effect waves-light gray" onClick={this.mutateFromActualState} ><i className="material-icons">save</i></a>
-                  <a className="btn-floating btn-small waves-effect waves-light gray" onClick={this.props.onDelete} ><i className="material-icons">clear</i></a>
+                  <div className="row">
+                    <div className="col s6">
+                      <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.props.onDelete} ><i className="material-icons">clear</i></a>
+                    </div> {/* col */}
+                    <div className="col s6">
+                      <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.mutateFromActualState} ><i className="material-icons">save</i></a>
+                    </div> {/* col */}
+                  </div> {/* row */}
                 </div> {/* col */}
               </div> {/* row */}
             </div> {/* card-action */}
