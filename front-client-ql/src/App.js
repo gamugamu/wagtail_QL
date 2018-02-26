@@ -16,13 +16,7 @@ class App extends Component {
   }
 
   onSelection(pmaType){
-      console.log("selected", pmaType);
-      /*
-      this.setState({
-        currentTypePma: pmaLabel
-      })
-*/
-      this.pmaCollection.updatePmaType(pmaType)
+    this.pmaCollection.updatePmaType(pmaType)
   }
 
   render() {

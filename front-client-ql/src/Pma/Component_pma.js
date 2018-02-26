@@ -44,7 +44,6 @@ export class PmaCollectionManager extends React.Component{
   onDeletePma(idx){
     var pma = this.state.pma.slice();
     pma.shift()
-    //  console.log("index---> ", this.refs['pma' + idx.toString()], mountNode);
     this.setState({pma:pma})
   }
 

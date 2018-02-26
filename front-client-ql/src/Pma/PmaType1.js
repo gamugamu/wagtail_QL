@@ -1,42 +1,26 @@
 import React from 'react';
-import Dropzone from  'react-dropzone';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import 'react-datepicker/dist/react-datepicker.css';
 import {apollo_client, uploadfile} from '../Services/Graph.js'
 import gql from 'graphql-tag'
 import _ from 'underscore'
-
+import moment from 'moment';
+import {PmaBase} from './PmaBase.js'
+import Dropzone from  'react-dropzone';
+import update from 'react-addons-update'; // ES6
 
 // pma classique
-export class Pmatype1 extends React.Component{
+export class Pmatype1 extends PmaBase{
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      id: 0,
+      title: '',        /* parent parser error */
+      isActive: false,  /* parent parser error */
       imageFiles: [],
-      imageCmpFiles: [],
-      isActive: false,
-      dateStart: moment(),
-      dateEnd: moment()
+      imageCmpFiles: []
     };
-    this.handleChangeStart      = this.handleChangeStart.bind(this);
-    this.handleChangeEnd        = this.handleChangeEnd.bind(this);
-    this.mutateFromActualState  = this.mutateFromActualState.bind(this);
-  }
-
-  componentDidMount(){
-    this.display(this.props.pma)
-    // l'update ne peut pas se faire de manière asynchrone. Le timer n'est pas encore crée.
-    setTimeout(function() {
-      this.props.onDateChange(this.state, /*performUpdate*/ true)
-    }.bind(this), 100);
   }
 
 // query display
   static handleQuerieFindAllElmt(callback){
-    console.log("handleQuerieFindAllElmt+++");
     apollo_client.query({ query: gql`
       {allPmahome{
             id
@@ -67,8 +51,6 @@ export class Pmatype1 extends React.Component{
     }
 
     function makeMutation(_this, urlImage = null){
-      console.log("mutate", _this.state.dateStart.format());
-
       apollo_client.mutate({mutation: gql`
         mutation mutation(
           $title: String!, $caption: String!, $id: Int!, $dateStart: String!,
@@ -110,13 +92,6 @@ export class Pmatype1 extends React.Component{
     })
   }
 
-  helper_date(date_){
-    if(!date_.isValid()){
-      return moment()
-    }else{
-      return date_
-    }
-  }
   // image callback
   onDrop(imageFiles){
     this.setState({
@@ -128,188 +103,40 @@ export class Pmatype1 extends React.Component{
     //no op
   }
 
-  // date callback
-  handleChangeStart(date) {
-    this.setState({
-      dateStart: date
-    });
-    // setState est asynchronuous
-    setTimeout(function() {
-      this.props.onDateChange(this.state, /*performUpdate*/ true)
-    }.bind(this), 100);
-  }
-
-  handleChangeEnd(date) {
-    this.setState({
-      dateEnd: date
-    });
-    // setState est asynchronuous
-    setTimeout(function() {
-      this.props.onDateChange(this.state, /*performUpdate*/ true)
-    }.bind(this), 100);
-  }
-
    render() {
       return (
       <div className="row oneLine">
         <div className="col">
           <div className="card pma-card-block">
-            <div className="card-image">
-              <Dropzone
-                  className       = "dragAndDropArea"
-                  onDrop          = {this.onDrop.bind(this)}
-                  accept          = "image/jpeg,image/jpg,image/tiff,image/gif,image/png"
-                  multiple        = {false}
-                  onDropRejected  = {this.handleDropRejected}>
-                  <div>{this.state.imageFiles.map((file, idx) => <img className="dragAndDropArea" src={file.preview} key={'k' + idx} alt=""/> )}</div>
-              </Dropzone>
-            </div> {/* card-image */}
+              {this.r_cardImage()}
             <div className="card-content">
-              <div className="input-field">
-                <input spellCheck="false" value={this.state.title} onChange={(e) => this.setState({ title: e.target.value }) } id="input_000" type="text" className="validate"></input>
-                <label className="active" htmlFor="first_name2">Titre</label>
-              </div>
-              <div className="input-field">
-                <textarea id="textarea1v" value={this.state.caption} onChange={(e) => this.setState({ caption: e.target.value }) } spellCheck="false" className="materialize-textarea"></textarea>
-                <label className="active" htmlFor="icon_prefix">Légende</label>
-              </div>
-              <div className ="row">
-                <div className ="col s1">
-                    <i className="fas fa-clock date-picto start"></i>
-                </div>{/* column */}
-                <div className ="col s5">
-                      <DatePicker
-                        selected        = {this.state.dateStart}
-                        selectsStart
-                        showTimeSelect
-                        startDate       = {this.state.dateStart}
-                        onChange        = {this.handleChangeStart}
-                        timeFormat      = "HH:mm"
-                        timeIntervals   = {15}
-                        dateFormat      = "DD-MMM HH:mm"
-                      />
-                </div>{/* column */}
-                <div className ="col s1">
-                  <i className="fas fa-clock date-picto end"></i>
-                </div>{/* column */}
-                <div className ="col s5">
-                  <DatePicker
-                    selected        = {this.state.dateEnd}
-                    selectsEnd
-                    showTimeSelect
-                    endDate         = {this.state.dateEnd}
-                    onChange        = {this.handleChangeEnd}
-                    timeFormat      = "HH:mm"
-                    timeIntervals   = {15}
-                    dateFormat      = "DD-MMM HH:mm"
-                    />
-                  </div>{/* column */}
-                </div>{/* row */}
+              {this.r_title()}
+              {this.r_caption()}
+              {this.r_date()}
             </div> {/* card-content */}
             <div className="card-action blue-grey darken-1">
-              <div className="row">
-                 <div className="col s6">
-                  <div className="switch">
-                     <label>
-                     Off
-                     <input type="checkbox" checked={this.state.isActive} onChange={(e) => this.setState({ isActive: !this.state.isActive }) }></input>
-                     <span className="lever"></span>
-                     On
-                     </label>
-                  </div>
-                </div>
-                <div className="col s6">
-                  <div className="row">
-                    <div className="col s6">
-                      <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.props.onDelete} ><i className="material-icons">clear</i></a>
-                    </div> {/* col */}
-                    <div className="col s6">
-                      <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.mutateFromActualState} ><i className="material-icons">check</i></a>
-                    </div> {/* col */}
-                  </div> {/* row */}
-                </div> {/* col */}
-              </div> {/* row */}
+              {this.r_footerAction()}
             </div> {/* card-action */}
           </div> {/* card-pmablock */}
         </div> {/* col */}
       </div>
       );
    }
-}
 
-export class Pmatype2 extends Pmatype1{
-  render() {
-     return (
-     <div className="row oneLine">
-       <div className="col">
-         <div className="card pma-card-block">
-           <div className="card-content">
-             <div className="input-field">
-               <input spellCheck="false" value={this.state.title} onChange={(e) => this.setState({ title: e.target.value }) } id="input_000" type="text" className="validate"></input>
-               <label className="active" htmlFor="first_name2">Titre</label>
-             </div>
-             <div className="input-field">
-               <textarea id="textarea1v" value={this.state.caption} onChange={(e) => this.setState({ caption: e.target.value }) } spellCheck="false" className="materialize-textarea"></textarea>
-               <label htmlFor="icon_prefix">Légende</label>
-             </div>
-             <div className ="row">
-               <div className ="col s1">
-                   <i className="fas fa-clock date-picto start"></i>
-               </div>{/* column */}
-               <div className ="col s5">
-                     <DatePicker
-                       selected        = {this.state.dateStart}
-                       selectsStart
-                       showTimeSelect
-                       startDate       = {this.state.dateStart}
-                       onChange        = {this.handleChangeStart}
-                       timeFormat      = "HH:mm"
-                       timeIntervals   = {15}
-                       dateFormat      = "DD-MMM HH:mm"
-                     />
-               </div>{/* column */}
-               <div className ="col s1">
-                 <i className="fas fa-clock date-picto end"></i>
-               </div>{/* column */}
-               <div className ="col s5">
-                 <DatePicker
-                   selected        = {this.state.dateEnd}
-                   selectsEnd
-                   showTimeSelect
-                   endDate         = {this.state.dateEnd}
-                   onChange        = {this.handleChangeEnd}
-                   timeFormat      = "HH:mm"
-                   timeIntervals   = {15}
-                   dateFormat      = "DD-MMM HH:mm"
-                   />
-                 </div>{/* column */}
-               </div>{/* row */}
-           </div> {/* card-content */}
-           <div className="card-action blue-grey darken-1">
-             <div className="row">
-                <div className="col s6">
-                 <div className="switch">
-                    <label>
-                    <input type="checkbox" checked={this.state.isActive} onChange={(e) => this.setState({ isActive: !this.state.isActive }) }></input>
-                    <span className="lever"></span>
-                    </label>
-                 </div>
-               </div>
-               <div className="col s6">
-                 <div className="row">
-                   <div className="col s6">
-                     <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.props.onDelete} ><i className="material-icons">clear</i></a>
-                   </div> {/* col */}
-                   <div className="col s6">
-                     <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.mutateFromActualState} ><i className="fas fa-check-circle"></i></a>
-                   </div> {/* col */}
-                 </div> {/* row */}
-               </div> {/* col */}
-             </div> {/* row */}
-           </div> {/* card-action */}
-         </div> {/* card-pmablock */}
-       </div> {/* col */}
-     </div>
-   )
- }
+   // render Helper
+   /////////////////////////////////////////////////////
+   r_cardImage = () => {
+     return(
+         <div className="card-image">
+           <Dropzone
+               className       = "dragAndDropArea"
+               onDrop          = {this.onDrop.bind(this)}
+               accept          = "image/jpeg,image/jpg,image/tiff,image/gif,image/png"
+               multiple        = {false}
+               onDropRejected  = {this.handleDropRejected}>
+               <div>{this.state.imageFiles.map((file, idx) => <img className="dragAndDropArea" src={file.preview} key={'k' + idx} alt=""/> )}</div>
+           </Dropzone>
+         </div>
+     )
+   }
 }

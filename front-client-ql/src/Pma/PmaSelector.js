@@ -1,6 +1,7 @@
 // permet de choisir son pma.
 import React from 'react';
-import {Pmatype1, Pmatype2} from './PmaType1.js'
+import {Pmatype1} from './PmaType1.js'
+import {Pmatype2} from './PmaType2.js'
 
 
 export const default_pma = {Pmatype1};
