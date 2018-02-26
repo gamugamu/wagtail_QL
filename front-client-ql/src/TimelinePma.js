@@ -20,12 +20,13 @@ const timelineOptions = {
 export class TimelinePma extends React.Component{
   constructor(props) {
     super(props);
+    var dateNow = new Date(1);
     this.state = {
       timelineItems: [{
         // Note: Bien qu'inutile, si on n'instancie pas le timeline avec un object,
         // il se retrouve vide et impossible à changer.
-        start:    Date.now(),
-        end:      Date.now(),  // end is optional
+        start:    dateNow,
+        end:      dateNow,  // end is optional
       }] // tableau vide ne fonctionne pas
     };
     this.renderTimeline   = this.renderTimeline.bind(this)

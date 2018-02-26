@@ -1,5 +1,6 @@
 import React from 'react';
 import {TimelinePma} from './TimelinePma.js'
+import {Pmatype1} from './PmaType1.js'
 
 // gere les collection de pma
 export class PmaCollectionManager extends React.Component{
@@ -8,8 +9,11 @@ export class PmaCollectionManager extends React.Component{
     this.state = {
       pma: [],
     };
-    this.onAddPma     = this.onAddPma.bind(this)
-    this.onDeletePma  = this.onDeletePma.bind(this)
+    this.onAddPma       = this.onAddPma.bind(this)
+    this.onDeletePma    = this.onDeletePma.bind(this)
+    this.updatePmaType  = this.updatePmaType.bind(this)
+
+    /*
     // display le nombre d'object de ce type
     var _this = this
     this.props.typePma.handleQuerieFindAllElmt(function(data){
@@ -17,11 +21,23 @@ export class PmaCollectionManager extends React.Component{
           pma: data
       })
     })
+    */
+  }
+
+  updatePmaType(pmaType){
+    // display le nombre d'object de ce type
+    var _this = this
+    pmaType.handleQuerieFindAllElmt(function(data){
+          _this.setState({
+              typePma : pmaType,
+              pma: data
+          })
+        })
   }
 
   onAddPma(){
     var newPma = this.state.pma.slice();
-    newPma.push(this.props.typePma);
+    newPma.push(this.state.typePma);
     this.setState({pma:newPma})
   }
 
@@ -44,7 +60,7 @@ export class PmaCollectionManager extends React.Component{
           <div id="scroller">
             <a className="waves-effect waves-light btn" onClick={this.onAddPma}>new</a>
             {this.state.pma.map((Item, index) => (
-              <this.props.typePma
+              <this.state.typePma
                 key           = {index}
                 pma           = {Item}
                 onDelete      = {()       => this.onDeletePma(index)}
@@ -54,7 +70,7 @@ export class PmaCollectionManager extends React.Component{
             </div>
           </div>
           <TimelinePma
-            ref = {(timeLine) => { this.timeLine = timeLine; }} />
+            ref = {(timeLine) => { this.timeLine = timeLine; }}
           />
       </div>
     );

@@ -107,3 +107,10 @@ textarea.materialize-textarea{
 .date-picto.end{
   color:Gray;
 }
+
+.switch label input[type=checkbox]:checked+.lever:after {
+    background-color: #FF5252 !important;
+}
+.switch label input[type=checkbox]:checked+.lever {
+    background-color: #FF5252 !important;
+}

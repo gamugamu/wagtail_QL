@@ -7,6 +7,7 @@ import {apollo_client, uploadfile} from './Service.js'
 import gql from 'graphql-tag'
 import _ from 'underscore'
 
+
 // pma classique
 export class Pmatype1 extends React.Component{
   constructor(props) {
@@ -35,6 +36,7 @@ export class Pmatype1 extends React.Component{
 
 // query display
   static handleQuerieFindAllElmt(callback){
+    console.log("handleQuerieFindAllElmt+++");
     apollo_client.query({ query: gql`
       {allPmahome{
             id
@@ -169,7 +171,7 @@ export class Pmatype1 extends React.Component{
               </div>
               <div className="input-field">
                 <textarea id="textarea1v" value={this.state.caption} onChange={(e) => this.setState({ caption: e.target.value }) } spellCheck="false" className="materialize-textarea"></textarea>
-                <label htmlFor="icon_prefix">Légende</label>
+                <label className="active" htmlFor="icon_prefix">Légende</label>
               </div>
               <div className ="row">
                 <div className ="col s1">
@@ -209,8 +211,10 @@ export class Pmatype1 extends React.Component{
                  <div className="col s6">
                   <div className="switch">
                      <label>
+                     Off
                      <input type="checkbox" checked={this.state.isActive} onChange={(e) => this.setState({ isActive: !this.state.isActive }) }></input>
                      <span className="lever"></span>
+                     On
                      </label>
                   </div>
                 </div>
@@ -220,7 +224,7 @@ export class Pmatype1 extends React.Component{
                       <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.props.onDelete} ><i className="material-icons">clear</i></a>
                     </div> {/* col */}
                     <div className="col s6">
-                      <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.mutateFromActualState} ><i className="material-icons">save</i></a>
+                      <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.mutateFromActualState} ><i className="material-icons">check</i></a>
                     </div> {/* col */}
                   </div> {/* row */}
                 </div> {/* col */}
@@ -231,4 +235,81 @@ export class Pmatype1 extends React.Component{
       </div>
       );
    }
+}
+
+export class Pmatype2 extends Pmatype1{
+  render() {
+     return (
+     <div className="row oneLine">
+       <div className="col">
+         <div className="card pma-card-block">
+           <div className="card-content">
+             <div className="input-field">
+               <input spellCheck="false" value={this.state.title} onChange={(e) => this.setState({ title: e.target.value }) } id="input_000" type="text" className="validate"></input>
+               <label className="active" htmlFor="first_name2">Titre</label>
+             </div>
+             <div className="input-field">
+               <textarea id="textarea1v" value={this.state.caption} onChange={(e) => this.setState({ caption: e.target.value }) } spellCheck="false" className="materialize-textarea"></textarea>
+               <label htmlFor="icon_prefix">Légende</label>
+             </div>
+             <div className ="row">
+               <div className ="col s1">
+                   <i className="fas fa-clock date-picto start"></i>
+               </div>{/* column */}
+               <div className ="col s5">
+                     <DatePicker
+                       selected        = {this.state.dateStart}
+                       selectsStart
+                       showTimeSelect
+                       startDate       = {this.state.dateStart}
+                       onChange        = {this.handleChangeStart}
+                       timeFormat      = "HH:mm"
+                       timeIntervals   = {15}
+                       dateFormat      = "DD-MMM HH:mm"
+                     />
+               </div>{/* column */}
+               <div className ="col s1">
+                 <i className="fas fa-clock date-picto end"></i>
+               </div>{/* column */}
+               <div className ="col s5">
+                 <DatePicker
+                   selected        = {this.state.dateEnd}
+                   selectsEnd
+                   showTimeSelect
+                   endDate         = {this.state.dateEnd}
+                   onChange        = {this.handleChangeEnd}
+                   timeFormat      = "HH:mm"
+                   timeIntervals   = {15}
+                   dateFormat      = "DD-MMM HH:mm"
+                   />
+                 </div>{/* column */}
+               </div>{/* row */}
+           </div> {/* card-content */}
+           <div className="card-action blue-grey darken-1">
+             <div className="row">
+                <div className="col s6">
+                 <div className="switch">
+                    <label>
+                    <input type="checkbox" checked={this.state.isActive} onChange={(e) => this.setState({ isActive: !this.state.isActive }) }></input>
+                    <span className="lever"></span>
+                    </label>
+                 </div>
+               </div>
+               <div className="col s6">
+                 <div className="row">
+                   <div className="col s6">
+                     <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.props.onDelete} ><i className="material-icons">clear</i></a>
+                   </div> {/* col */}
+                   <div className="col s6">
+                     <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.mutateFromActualState} ><i className="fas fa-check-circle"></i></a>
+                   </div> {/* col */}
+                 </div> {/* row */}
+               </div> {/* col */}
+             </div> {/* row */}
+           </div> {/* card-action */}
+         </div> {/* card-pmablock */}
+       </div> {/* col */}
+     </div>
+   )
+ }
 }
