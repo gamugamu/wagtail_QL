@@ -6,7 +6,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 // conf
 import config from 'react-global-configuration';
-import configuration from './config';
+import configuration from '../config';
 
 config.set(configuration);
 

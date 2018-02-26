@@ -3,7 +3,7 @@ import Dropzone from  'react-dropzone';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
-import {apollo_client, uploadfile} from './Service.js'
+import {apollo_client, uploadfile} from '../Services/Graph.js'
 import gql from 'graphql-tag'
 import _ from 'underscore'
 

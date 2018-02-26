@@ -2,11 +2,8 @@
 import React, { Component} from 'react';
 import './App.css';
 
-import {PmaCollectionManager} from './Component_pma.js'
-import {PmaSelector} from './PmaSelector.js'
-
-
-import {Pmatype1} from './PmaType1.js'
+import {PmaCollectionManager} from './Pma/Component_pma.js'
+import {PmaSelector} from './Pma/PmaSelector.js'
 
 class App extends Component {
   constructor(props) {
@@ -37,7 +34,7 @@ class App extends Component {
           onSelection = {this.onSelection}
         />
         <PmaCollectionManager
-          ref = {(pmaCollection) => { this.pmaCollection = pmaCollection;}}
+          ref = {(pmaCollection) => { this.pmaCollection = pmaCollection}}
         />
       </div>
     );
