@@ -19,11 +19,11 @@ Base.query = db_session.query_property()
 class Pma_base(Base):
     __tablename__   = 'pmabase'
     id              = Column(Integer, primary_key=True)
-    title           = Column(String)
-    caption         = Column(String)
+    title           = Column(String, default="")
+    caption         = Column(String, default="")
     date_start      = Column(String) #Date
     date_end        = Column(String) #Date
-    category        = Column(Integer)
+    category        = Column(Integer, default=0)
     is_active       = Column(Boolean, default=0)
 
 class Pma_home(Pma_base):
@@ -40,10 +40,10 @@ class Gallery(Base):
     __tablename__       = 'gallery'
     id                  = Column(Integer, primary_key=True)
     parent_id           = Column(Integer, ForeignKey('pmabase.id'))
-    title               = Column(String)
-    caption             = Column(String)
-    url_image           = Column(String)
-    url_redirection     = Column(String)
+    title               = Column(String, default="")
+    caption             = Column(String, default="")
+    url_image           = Column(String, default="")
+    url_redirection     = Column(String, default="")
 
 class DBHelper():
     @staticmethod

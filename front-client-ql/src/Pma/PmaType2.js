@@ -1,10 +1,13 @@
 import React from 'react';
 import {apollo_client} from '../Services/Graph.js'
 import gql from 'graphql-tag'
+import { graphql } from 'react-apollo';
+
 import {Pmatype1} from './PmaType1.js'
 import Dropzone from  'react-dropzone';
 
-class galleryStruct {
+
+class gallery {
   constructor() {
     this.name             = ""
     this.imageFile        = []
@@ -20,9 +23,7 @@ export class Pmatype2 extends Pmatype1{
     this.state = {
       title: '',        /* parent parser error */
       isActive: false,  /* parent parser error */
-      galleries: [new galleryStruct()],
-      imageFiles: [],
-      imageCmpFiles: [],
+      galleries: [new gallery()],
       currentIndexSelected: 0
     };
 
@@ -39,34 +40,71 @@ export class Pmatype2 extends Pmatype1{
             isActive
             dateStart
             dateEnd
-            category
+            gallery{
+                title
+                caption
+                urlImage
+                urlRedirection
+            }
           }
       }`}).then(({ data }) => {
           callback(data["allPmaGallery"])
       });
   }
 
+  mutateFromActualState(){
+
+    apollo_client.mutate({mutation: gql`
+      mutation mutation(
+        $title: String!, $caption: String!, $id: Int!, $dateStart: String!,
+        $dateEnd: String!, $isActive: Boolean!, $urlPmaImage: String){
+          mutatePmaGallery(pmaData:
+            {id:$id, title: $title, caption: $caption, dateStart: $dateStart,
+              dateEnd: $dateEnd, isActive: $isActive, urlPmaImage: $urlPmaImage, gallery: [{title:"lolo", urlImage: "eaerrr", caption:"desc from dskl"}, {title:"ccoco"}] }
+            ) {
+              pma{
+                id
+              }
+            }
+          }`,
+        variables: {
+          title:      this.state.title,
+          caption:    this.state.caption,
+          id:         this.state.id,
+          isActive:   this.state.isActive,
+          dateStart:  this.state.dateStart.format(),
+          dateEnd:    this.state.dateEnd.format(),
+        },
+      }).then(({ data }) => {
+          console.log("*done", data );
+      });
+    }
+
 // display
   display(blob){
     super.display(blob)
     var listGallery = []
     // note: pas testé
-    for(var url in blob.urlPmaImage){
-      listGallery.push({"preview" : blob.urlPmaImage[url]})
+    for(var gallery_ in blob.gallery){
+      gallery_  = blob.gallery[gallery_]
+      var g     = new gallery();
+
+      for (const [key, value] of Object.entries(gallery_)) {
+          g[key] = value
+      }
+      listGallery.push(g)
     }
+
     this.setState({
-        imageFiles:     listGallery,
-        imageCmpFiles:  listGallery,
+        galleries: listGallery
     })
   }
 
   // image callback
   onDrop(idx, imageFiles){
-    var cp_galleries = this.state.galleries.slice()
+    var cp_galleries              = this.state.galleries.slice()
+    cp_galleries[idx].imageFile   = imageFiles
 
-    cp_galleries[idx].imageFile  = imageFiles
-    console.log("this ", idx, cp_galleries[idx]);
-    console.log("this", this.state.galleries[this.state.currentIndexSelected].imageFile[0]['preview']);
     this.setState({
         galleries: cp_galleries
     })
@@ -86,7 +124,7 @@ export class Pmatype2 extends Pmatype1{
 
   onAddingNewGallery(){
     var gallery = this.state.galleries.slice()
-    gallery.push(new galleryStruct())
+    gallery.push(new gallery())
 
     this.setState({
       galleries: gallery
