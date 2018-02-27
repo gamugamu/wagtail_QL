@@ -10,8 +10,6 @@ export class PmaBase extends React.Component{
     this.state = {
       title: '',
       id: 0,
-      imageFiles: [],
-      imageCmpFiles: [],
       isActive: false,
       dateStart: moment(),
       dateEnd: moment()

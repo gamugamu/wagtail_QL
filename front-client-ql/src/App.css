@@ -47,6 +47,11 @@
   background-color: gray;
 }
 
+.galleryDragAndDropArea{
+  height: 50px;
+  background-color: gray;
+}
+
 .scrollWidth{
     width: auto;
     height:210px;
@@ -113,4 +118,18 @@ textarea.materialize-textarea{
 }
 .switch label input[type=checkbox]:checked+.lever {
     background-color: #FF5252 !important;
+}
+
+.gallery-content {
+  margin: 10px;
+  background-color: AliceBlue ;
+}
+
+.big{
+  font-size: 2.5em;
+  color:Tomato;
+}
+
+.delete-button{
+  width: 100%;
 }
