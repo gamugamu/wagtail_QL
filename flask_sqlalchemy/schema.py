@@ -2,7 +2,7 @@
 import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from models import db_session, DBHelper, Pma_base as Pma_baseModel, Pma_home as Pma_homeModel, Pma_gallery as Pma_galleryModel
+from models import db_session, DBHelper, Pma_base as Pma_baseModel, Pma_home as Pma_homeModel, Pma_gallery as Pma_galleryModel, Gallery as GalleryModel
 from dateutil import parser
 import time
 
@@ -20,9 +20,9 @@ def query_id_by_className(cls_name, id):
 
     return obj
 
-def map_value_from_input(obj, input):
+def map_value_from_input(obj, input, exclude = []):
     for attr, value in input.__dict__.iteritems():
-        if value is not None:
+        if value is not None and attr not in exclude:
             setattr(obj, attr, value)
 
     return obj
@@ -36,7 +36,6 @@ def date_duration_validation(obj, input):
 
     if input.date_end is not None:
         obj.date_end = input.date_end
-
 
     return obj
 
@@ -101,13 +100,49 @@ class Mutate_Pma_home(graphene.Mutation):
         return Mutate_Pma_home(pma=pma)
 
 ################### GALLERY_PMA #####################
+def mutate_gallery_components(pma, pma_data):
+    lenght = len(pma_data["gallery"]) - len(pma.gallery)
+
+    if lenght > 0:
+        for i in range(0, lenght):
+            print i, len(pma.gallery)
+            if i < len(pma.gallery):
+                # update
+                g = pma.gallery[i]
+                g = map_value_from_input(g, pma_data["gallery"][i])
+                pma.gallery[i] = g
+
+            else:
+                # add
+                gallery = GalleryModel()
+                g       = map_value_from_input(gallery, pma_data["gallery"][i])
+                pma.gallery.append(g)
+    else:
+        # delete
+        del pma.gallery[lenght:]
+
+    return pma
+
+class Gallery(SQLAlchemyObjectType):
+    class Meta:
+        model = GalleryModel
+
 class Pma_gallery(Pma_base):
     class Meta:
         model = Pma_galleryModel
 
+class gallery_input(graphene.InputObjectType):
+    title           = graphene.String()
+    caption         = graphene.String()
+    url_image       = graphene.String()
+    url_redirection = graphene.String()
+
 class Pma_gallery_input(Pma_base_input):
-    title           = graphene.String(required=True)
-    caption         = graphene.String(required=True)
+    title    = graphene.String()
+    caption  = graphene.String()
+    gallery  = graphene.List(gallery_input, required=True)
+
+    #gallery  = graphene.List(Gallery)
 
 class Mutate_Pma_gallery(graphene.Mutation):
     class Arguments:
@@ -118,8 +153,9 @@ class Mutate_Pma_gallery(graphene.Mutation):
     @staticmethod
     def mutate(self, info, pma_data=None):
         pma = query_id_by_className("Pma_galleryModel", pma_data.id)
-        pma = map_value_from_input(pma, pma_data)
+        pma = map_value_from_input(pma, pma_data, exclude=["gallery"])
         pma = date_duration_validation(pma, pma_data)
+        pma = mutate_gallery_components(pma, pma_data)
 
         DBHelper.fast_commit(pma)
 

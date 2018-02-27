@@ -34,12 +34,16 @@ class Pma_home(Pma_base):
 class Pma_gallery(Pma_base):
     __tablename__   = 'pmagallery'
     id              = Column(Integer, ForeignKey('pmabase.id'), primary_key=True)
-    url_pma_images = relationship("gallery")
+    gallery         = relationship("Gallery", cascade="all, delete-orphan")
 
-class gallery(Base):
-    __tablename__   = 'gallery'
-    id              = Column(Integer, primary_key=True)
-    parent_id       = Column(Integer, ForeignKey('pmabase.id'))
+class Gallery(Base):
+    __tablename__       = 'gallery'
+    id                  = Column(Integer, primary_key=True)
+    parent_id           = Column(Integer, ForeignKey('pmabase.id'))
+    title               = Column(String)
+    caption             = Column(String)
+    url_image           = Column(String)
+    url_redirection     = Column(String)
 
 class DBHelper():
     @staticmethod
