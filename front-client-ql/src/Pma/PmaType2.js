@@ -3,6 +3,7 @@ import {apollo_client} from '../Services/Graph.js'
 import gql from 'graphql-tag'
 import { graphql } from 'react-apollo';
 
+import {GQLStringifier} from '../Services/GQLStringifier.js'
 import {Pmatype1} from './PmaType1.js'
 import Dropzone from  'react-dropzone';
 
@@ -15,6 +16,8 @@ class gallery {
     this.caption          = ""
     this.url_redirection  = ""
   }
+
+
 }
 
 export class Pmatype2 extends Pmatype1{
@@ -33,7 +36,8 @@ export class Pmatype2 extends Pmatype1{
   // query display
   static handleQuerieFindAllElmt(callback){
     apollo_client.query({ query: gql`
-      {allPmaGallery{
+      {
+        allPmaGallery{
             id
             title
             caption
@@ -52,21 +56,52 @@ export class Pmatype2 extends Pmatype1{
       });
   }
 
+
   mutateFromActualState(){
+    var axios = require('axios');
+    console.log("GALLERIES -->", GQLStringifier.stringify(this.state.galleries[0], [], ["title"]));
+    var gallery =  GQLStringifier.stringify(this.state.galleries, [], ["title"])
+
+    console.log("RESUKT -->", gallery);
+    
+    // application/json example
+  /* eslint-disable no-unused-vars */
+  let configJson = {
+  	url: 'http://127.0.0.1:5000/graphql',
+  	method: 'post',
+  	data: {
+  		query: `mutation myMutation {
+        mutatePmaGallery(pmaData: {title: "new pma from js", caption: "lobulous", gallery:${gallery} }) {
+          pma{
+            title
+            caption
+          }
+        }
+      }`
+  	}
+  };
+
+  // swap bewteen configGraphQL and configJson (same response)
+  axios(configJson).then(response => {
+  	console.log('graphql response:', response.data);
+  }).catch(err => {
+  	console.log('graphql error:', err);
+  });
+    return;
 
     apollo_client.mutate({mutation: gql`
       mutation mutation(
         $title: String!, $caption: String!, $id: Int!, $dateStart: String!,
-        $dateEnd: String!, $isActive: Boolean!, $urlPmaImage: String){
+        $dateEnd: String!, $isActive: Boolean!, $urlPmaImage: String, $gallery:[Gallery]){
           mutatePmaGallery(pmaData:
             {id:$id, title: $title, caption: $caption, dateStart: $dateStart,
-              dateEnd: $dateEnd, isActive: $isActive, urlPmaImage: $urlPmaImage, gallery: [{title:"lolo", urlImage: "eaerrr", caption:"desc from dskl"}, {title:"ccoco"}] }
-            ) {
+              dateEnd: $dateEnd, isActive: $isActive, urlPmaImage: $urlPmaImage, gallery: $gallery}) {
               pma{
                 id
               }
             }
-          }`,
+          }
+          `,
         variables: {
           title:      this.state.title,
           caption:    this.state.caption,
@@ -74,6 +109,7 @@ export class Pmatype2 extends Pmatype1{
           isActive:   this.state.isActive,
           dateStart:  this.state.dateStart.format(),
           dateEnd:    this.state.dateEnd.format(),
+          gallery:    this.state.gallery
         },
       }).then(({ data }) => {
           console.log("*done", data );

@@ -12,8 +12,9 @@ Gcloud + kubernet en prod.
 gcloud container clusters get-credentials graphql-test --zone europe-west1-b
 
 # En dev
-# minikube start --vm-driver=xhyve
+minikube start --vm-driver=xhyve
 kubectl config use-context minikube
+export DJANGO_PASSWORD=mysecretpassword
 
 Les images docker doivent être buildé en local pour minikube.
 ex (builder le docker mysite/Dockerfile): docker build -t cryptodraco/wagtail-ql .
@@ -47,3 +48,7 @@ kubernetes     ClusterIP      10.59.240.1     <none>          443/TCP        22h
 postgres       ClusterIP      10.59.244.51    <none>          5432/TCP       14h
 redis-master   ClusterIP      10.59.240.43    <none>          6379/TCP       22h
 redis-slave    ClusterIP      10.59.254.122   <none>          6379/TCP       22h
+
+#port forwading
+kubectl port-forward <posgtres-pod> 5432:5432 &
+kubectl port-forward <redis-pod> 6379:6379 &
