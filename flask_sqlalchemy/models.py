@@ -29,7 +29,7 @@ class Pma_base(Base):
 class Pma_home(Pma_base):
     __tablename__   = 'pmahome'
     id              = Column(Integer, ForeignKey('pmabase.id'), primary_key=True)
-    url_pma_image   = Column(String)
+    url_image       = Column(String)
 
 class Pma_gallery(Pma_base):
     __tablename__   = 'pmagallery'

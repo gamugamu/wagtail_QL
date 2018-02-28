@@ -14,8 +14,12 @@ export class Pmatype1 extends PmaBase{
       title: '',        /* parent parser error */
       isActive: false,  /* parent parser error */
       imageFiles: [],
-      imageCmpFiles: []
+      imageCmpFiles: [],
+      urlImage: "",
+      urlRedirection: ""
     };
+    console.log("X-->", this.state);
+
   }
 
 // query display
@@ -29,9 +33,10 @@ export class Pmatype1 extends PmaBase{
             dateStart
             dateEnd
             category
-            urlPmaImage
+            urlImage
           }
       }`}).then(({ data }) => {
+        console.log("retrieve", data);
           callback(data["allPmaHome"])
       });
   }
@@ -45,49 +50,62 @@ export class Pmatype1 extends PmaBase{
         makeMutation(_this, url)
       });
     }else{
-      makeMutation(this)
+      makeMutation(_this)
     }
 
-    function makeMutation(_this, urlImage = null){
-      apollo_client.mutate({mutation: gql`
-        mutation mutation(
-          $title: String!, $caption: String!, $id: Int!, $dateStart: String!,
-          $dateEnd: String!, $isActive: Boolean!, $urlPmaImage: String){
-            mutatePmaHome(pmaData:
-              {id:$id, title: $title, caption: $caption, dateStart: $dateStart,
-                dateEnd: $dateEnd, isActive: $isActive, urlPmaImage: $urlPmaImage}) {
-                pma{
-                  id
-                }
+    function makeMutation(_this, urlImage = ""){
+      var axios   = require('axios');
+      console.log("-->", _this.state);
+      // application/json example
+      /* eslint-disable no-unused-vars */
+      let configJson = {
+        url: 'http://127.0.0.1:5000/graphql',
+        method: 'post',
+        data: {
+          query: `mutation myMutation {
+            mutatePmaHome(pmaData: {
+              id:             ${this.state.id},
+              title:          ${JSON.stringify(this.state.title)},
+              caption:        ${JSON.stringify(this.state.caption)},
+              urlImage:       ${JSON.stringify(urlImage)}}),
+              urlRedirection: ${JSON.stringify(this.state.urlRedirection)} {
+              pma{
+                title,
               }
-            }`,
-          variables: {
-            title:      _this.state.title,
-            caption:    _this.state.caption,
-            id:         _this.state.id,
-            isActive:   _this.state.isActive,
-            dateStart:  _this.state.dateStart.format(),
-            dateEnd:    _this.state.dateEnd.format(),
-            urlPmaImage: urlImage
-          },
-        }).then(({ data }) => {
-            console.log("*done", data );
-        });;
+            }
+          }`
+        }
+    };
+    console.log("configJson -->", configJson);
+    // swap bewteen configGraphQL and configJson (same response)
+    axios(configJson).then(response => {
+      console.log('graphql response:', response.data);
+    }).catch(err => {
+      console.log('graphql error:', err);
+    });
     }
   }
 
 // display
   display(blob){
-    this.setState({
-        id:             blob.id,
-        title:          blob.title,
-        caption:        blob.caption,
-        isActive:       blob.isActive,
-        dateStart:      this.helper_date(moment(blob.dateStart)),
-        dateEnd:        this.helper_date(moment(blob.dateEnd)),
-        imageFiles:     [{"preview" : blob.urlPmaImage}],
-        imageCmpFiles:  [{"preview" : blob.urlPmaImage}],
-    })
+    console.log("display blob", blob);
+    if(typeof  blob !== 'function'){
+      this.setState({
+          id:             blob.id,
+          title:          blob.title,
+          caption:        blob.caption,
+          isActive:       blob.isActive,
+          dateStart:      this.helper_date(moment(blob.dateStart)),
+          dateEnd:        this.helper_date(moment(blob.dateEnd)),
+          imageFiles:     [{"preview" : blob.urlPmaImage}],
+          imageCmpFiles:  [{"preview" : blob.urlPmaImage}],
+      })
+    }else{
+      this.setState({
+          dateStart:      this.helper_date(moment(blob.dateStart)),
+          dateEnd:        this.helper_date(moment(blob.dateEnd))
+      })
+    }
   }
 
   // image callback

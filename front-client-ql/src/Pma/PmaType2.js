@@ -1,5 +1,5 @@
 import React from 'react';
-import {apollo_client} from '../Services/Graph.js'
+import {apollo_client, uploadfile} from '../Services/Graph.js'
 import gql from 'graphql-tag'
 import { graphql } from 'react-apollo';
 
@@ -7,17 +7,14 @@ import {GQLStringifier} from '../Services/GQLStringifier.js'
 import {Pmatype1} from './PmaType1.js'
 import Dropzone from  'react-dropzone';
 
-
 class gallery {
   constructor() {
-    this.name             = ""
     this.imageFile        = []
     this.title            = ""
     this.caption          = ""
-    this.url_redirection  = ""
+    this.urlImage         = ""
+    this.urlRedirection   = ""
   }
-
-
 }
 
 export class Pmatype2 extends Pmatype1{
@@ -35,65 +32,81 @@ export class Pmatype2 extends Pmatype1{
 
   // query display
   static handleQuerieFindAllElmt(callback){
-    apollo_client.query({ query: gql`
-      {
-        allPmaGallery{
-            id
-            title
-            caption
-            isActive
-            dateStart
-            dateEnd
-            gallery{
+      var axios   = require('axios')
+      let configJson = {
+        url: 'http://127.0.0.1:5000/graphql',
+        method: 'post',
+        data: {
+          query: `query gallery{
+            allPmaGallery{
+                id
                 title
                 caption
-                urlImage
-                urlRedirection
-            }
-          }
-      }`}).then(({ data }) => {
-          callback(data["allPmaGallery"])
-      });
+                isActive
+                dateStart
+                dateEnd
+                gallery{
+                    title
+                    caption
+                    urlImage
+                    urlRedirection
+                }
+              }
+          }`
+        }
+    };
+    console.log("configJson -->", configJson);
+    // swap bewteen configGraphQL and configJson (same response)
+    axios(configJson).then(response => {
+        callback(response.data.data["allPmaGallery"])
+    }).catch(err => {
+      console.log('graphql error:', err);
+    });
   }
 
 
   mutateFromActualState(){
-    var axios = require('axios');
-    console.log("GALLERIES -->", GQLStringifier.stringify(this.state.galleries[0], [], ["title"]));
-    var gallery =  GQLStringifier.stringify(this.state.galleries, [], ["title"])
+      var axios   = require('axios');
+      var gallery =  GQLStringifier.stringify(this.state.galleries, ["imageFile"])
+      // application/json example
+      /* eslint-disable no-unused-vars */
+      console.log("--->", this.state.id);
+      var id = (typeof this.state.id !== 'undefined')? this.state.id : 100
 
-    console.log("ID -->", this.state.id);
-
-    // application/json example
-  /* eslint-disable no-unused-vars */
-  let configJson = {
-  	url: 'http://127.0.0.1:5000/graphql',
-  	method: 'post',
-  	data: {
-  		query: `mutation myMutation {
-        mutatePmaGallery(pmaData: {id:${this.state.id},  title: "new pma from js", caption: "lobulous", gallery:${gallery} }) {
-          pma{
-            title
-            caption
-          }
-        }
-      }`
-  	}
-  };
-
-  // swap bewteen configGraphQL and configJson (same response)
-  axios(configJson).then(response => {
-  	console.log('graphql response:', response.data);
-  }).catch(err => {
-  	console.log('graphql error:', err);
-  });
-
-    }
+      let configJson = {
+      	url: 'http://127.0.0.1:5000/graphql',
+      	method: 'post',
+      	data: {
+      		query: `mutation myMutation {
+            mutatePmaGallery(pmaData: {
+              id:` + id + `
+              title:    ${JSON.stringify(this.state.title)},
+              caption:  ${JSON.stringify(this.state.caption)},
+              isActive:  ${JSON.stringify(this.state.isActive)},
+              gallery:  ${gallery}}) {
+              pma{
+                title,
+                caption,
+                gallery{
+                  title
+                }
+              }
+            }
+          }`
+      	}
+    };
+    console.log("configJson -->", configJson);
+    // swap bewteen configGraphQL and configJson (same response)
+    axios(configJson).then(response => {
+    	console.log('graphql response:', response.data);
+    }).catch(err => {
+    	console.log('graphql error:', err);
+    });
+}
 
 // display
   display(blob){
     super.display(blob)
-    console.log("----> blob", blob);
     var listGallery = [new gallery()]
     // note: pas testé
     for(var gIdx in blob.gallery){
@@ -103,15 +116,12 @@ export class Pmatype2 extends Pmatype1{
       for (const [key, value] of Object.entries(gallery_)) {
           g[key] = value
       }
-      console.log("DETAIL ", gallery_);
       listGallery[gIdx] = g
     }
 
     this.setState({
         galleries: listGallery
     })
-    console.log("GALLERY ---->", listGallery);
-
   }
 
   // image callback
@@ -119,17 +129,20 @@ export class Pmatype2 extends Pmatype1{
     var cp_galleries              = this.state.galleries.slice()
     cp_galleries[idx].imageFile   = imageFiles
 
-    this.setState({
-        galleries: cp_galleries
-    })
+    var _this = this;
+
+    uploadfile(cp_galleries[idx].imageFile[0], function(url, error){
+      console.log("image updated+++", url);
+      cp_galleries[idx].urlImage = url
+
+      _this.setState({
+          galleries: cp_galleries
+      })
+    });
   }
 
   url_image_forIndex(idx){
-      if(this.state.galleries[idx].imageFile.length !== 0){
-        return this.state.galleries[idx].imageFile[0]['preview']
-      }else{
-        return ""
-      }
+    return this.state.galleries[idx].urlImage
   }
 
   class_for_state(idx){
@@ -137,11 +150,13 @@ export class Pmatype2 extends Pmatype1{
   }
 
   onAddingNewGallery(){
-    var gallery = this.state.galleries.slice()
-    gallery.push(new gallery())
+    var g = this.state.galleries.slice()
+    g.push(new gallery())
+    var idx = g.length - 1
 
     this.setState({
-      galleries: gallery
+      galleries: g,
+      currentIndexSelected: idx
     })
 
     console.log("this ", this.state.galleries);

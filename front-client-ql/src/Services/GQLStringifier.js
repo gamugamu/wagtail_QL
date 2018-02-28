@@ -3,21 +3,16 @@ export class GQLStringifier{
   static preventR = 0;
 
   static stringify(obj, exclude = [], include = []){
-    console.log("will parse ", obj, GQLStringifier.preventR, GQLStringifier.preventR++ >= 20, obj === 'undefined', obj === null);
-
     // start
     var elm = ""
     if(obj instanceof Array){
       elm += "["
       for (var i = 0; i < obj.length; i++) {
-          console.log("from iterator");
           elm += GQLStringifier.stringify(obj[i], exclude, include)
           elm += ","
       }
-      console.log("endFor+++");
       elm = GQLStringifier.lastOperatorCheck(elm)
       elm += "]"
-      console.log("Test", elm);
     }
     else{
       elm += "{";
@@ -29,17 +24,17 @@ export class GQLStringifier{
             // include logique
             if(include.length !== 0){
                if(include.indexOf(someKey) > -1){
-                 console.log("include only --->", someKey);
                  elm += someKey + ":" + JSON.stringify(obj[someKey]) + ","
                }
             }else{
               // pas d'inculsion
-              elm += someKey + ":" + JSON.stringify(obj[someKey]) + ","
-              console.log("--->", someKey);
+              if(exclude.indexOf(someKey) < 0){
+                elm += someKey + ":" + JSON.stringify(obj[someKey]) + ","
+              }
             }
           }
         }
-      }    
+      }
       elm = GQLStringifier.lastOperatorCheck(elm)
       elm += "}"
     }
