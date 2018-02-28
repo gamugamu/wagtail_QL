@@ -101,12 +101,12 @@ class Mutate_Pma_home(graphene.Mutation):
 
 ################### GALLERY_PMA #####################
 def mutate_gallery_components(pma, pma_data):
-    lenght = len(pma_data["gallery"]) - len(pma.gallery)
-
-    if lenght > 0:
-        for i in range(0, lenght):
-            print i, len(pma.gallery)
-            if i < len(pma.gallery):
+    lenght      = len(pma_data["gallery"]) - len(pma.gallery)
+    g_lenght    = len(pma_data["gallery"])
+    
+    if lenght >= 0:
+        for i in [x for x in xrange(g_lenght) if x != g_lenght + 1]:
+            if i <= len(pma.gallery) and len(pma.gallery) != 0:
                 # update
                 g = pma.gallery[i]
                 g = map_value_from_input(g, pma_data["gallery"][i])
