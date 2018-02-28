@@ -62,8 +62,8 @@ export class Pmatype2 extends Pmatype1{
     console.log("GALLERIES -->", GQLStringifier.stringify(this.state.galleries[0], [], ["title"]));
     var gallery =  GQLStringifier.stringify(this.state.galleries, [], ["title"])
 
-    console.log("RESUKT -->", gallery);
-    
+    console.log("ID -->", this.state.id);
+
     // application/json example
   /* eslint-disable no-unused-vars */
   let configJson = {
@@ -71,7 +71,7 @@ export class Pmatype2 extends Pmatype1{
   	method: 'post',
   	data: {
   		query: `mutation myMutation {
-        mutatePmaGallery(pmaData: {title: "new pma from js", caption: "lobulous", gallery:${gallery} }) {
+        mutatePmaGallery(pmaData: {id:${this.state.id},  title: "new pma from js", caption: "lobulous", gallery:${gallery} }) {
           pma{
             title
             caption
@@ -87,53 +87,31 @@ export class Pmatype2 extends Pmatype1{
   }).catch(err => {
   	console.log('graphql error:', err);
   });
-    return;
 
-    apollo_client.mutate({mutation: gql`
-      mutation mutation(
-        $title: String!, $caption: String!, $id: Int!, $dateStart: String!,
-        $dateEnd: String!, $isActive: Boolean!, $urlPmaImage: String, $gallery:[Gallery]){
-          mutatePmaGallery(pmaData:
-            {id:$id, title: $title, caption: $caption, dateStart: $dateStart,
-              dateEnd: $dateEnd, isActive: $isActive, urlPmaImage: $urlPmaImage, gallery: $gallery}) {
-              pma{
-                id
-              }
-            }
-          }
-          `,
-        variables: {
-          title:      this.state.title,
-          caption:    this.state.caption,
-          id:         this.state.id,
-          isActive:   this.state.isActive,
-          dateStart:  this.state.dateStart.format(),
-          dateEnd:    this.state.dateEnd.format(),
-          gallery:    this.state.gallery
-        },
-      }).then(({ data }) => {
-          console.log("*done", data );
-      });
     }
 
 // display
   display(blob){
     super.display(blob)
-    var listGallery = []
+    console.log("----> blob", blob);
+    var listGallery = [new gallery()]
     // note: pas testé
-    for(var gallery_ in blob.gallery){
-      gallery_  = blob.gallery[gallery_]
-      var g     = new gallery();
+    for(var gIdx in blob.gallery){
+      var gallery_  = blob.gallery[gIdx]
+      var g         = new gallery();
 
       for (const [key, value] of Object.entries(gallery_)) {
           g[key] = value
       }
-      listGallery.push(g)
+      console.log("DETAIL ", gallery_);
+      listGallery[gIdx] = g
     }
 
     this.setState({
         galleries: listGallery
     })
+    console.log("GALLERY ---->", listGallery);
+
   }
 
   // image callback
@@ -147,11 +125,11 @@ export class Pmatype2 extends Pmatype1{
   }
 
   url_image_forIndex(idx){
-    if(this.state.galleries[idx].imageFile.length !== 0){
-      return this.state.galleries[idx].imageFile[0]['preview']
-    }else{
-      return ""
-    }
+      if(this.state.galleries[idx].imageFile.length !== 0){
+        return this.state.galleries[idx].imageFile[0]['preview']
+      }else{
+        return ""
+      }
   }
 
   class_for_state(idx){
