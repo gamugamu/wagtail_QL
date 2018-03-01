@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: flaskgql-kiabi
+  labels:
+    name: flaskgql-kiabi
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: flaskgql-kiabi
+    spec:
+      containers:
+      - name: flaskgql-kiabi
+        image: cryptodraco/flask_gql:v0.3.0
+        #image: gcr.io/fire-193914/frontend
+        #->! prod
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+          - name: secrets
+            mountPath: /etc/secrets
+            readOnly: true
+      volumes:
+      - name: secrets
+        secret:
+          secretName: db-passwords
+---
+
+# The polls service provides a load-balancing proxy over the polls app
+# pods. By specifying the type as a 'LoadBalancer', Container Engine will
+# create an external HTTP load balancer.
+# For more information about Services see:
+#   https://cloud.google.com/container-engine/docs/services/
+# For more information about external HTTP load balancing see:
+#   https://cloud.google.com/container-engine/docs/load-balancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaskgql-kiabi
+  labels:
+    name: flaskgql-kiabi
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 104.199.84.141
+
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    name: flaskgql-kiabi

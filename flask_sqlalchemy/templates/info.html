@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Kiabi Pma Manager</title>
+    </head>
+
+    <body>
+        <h1>Version 0.3.0</h1>
+        <ul>
+          <p><b>retourne tout les pma de la page home</b></p>
+          <code>
+            query pma{
+          allPmahome{
+            title
+            caption
+            id
+            dateStart
+            dateEnd
+          }
+          }
+          </code>
+        </ul>
+        <ul>
+          <p><b>retourne toutes les galleries de la page home</b></p>
+          <code>
+            query gallery{
+            allPmaGallery{
+              title
+              caption
+              id
+              dateStart
+              dateEnd
+            }
+            }
+          </code>
+        </ul>
+        <ul>
+        <h2>Mutations</h2>
+        <p><b>modifie une page home</b></p>
+        <code>
+          mutation myMutation {
+            mutatePmaHome(pmaData: {title: "new pma", caption: "lobulous"}) {
+             pma{
+              title
+              caption
+            }
+            }
+          }
+
+        </code>
+      </ul>
+      <ul>
+        <p><b>modifie une gallerie</b></p>
+        <code>
+          mutation myMutation {
+                    mutatePmaGallery(pmaData: {
+                      id:       1,
+                      title:    "new pma from js",
+                      caption:  "lobulous",
+                      gallery:  [ {title:"Deux titre"}]}) {
+                      pma{
+                        title,
+                        caption,
+                        gallery{
+                          title
+                          caption
+                        }
+                      }
+                    }
+                  }
+        </code>
+      </ul>
+
+    </body>
+</html>

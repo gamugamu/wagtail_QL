@@ -1,6 +1,6 @@
 # coding: utf-8
 # flask_sqlalchemy/app.py
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_graphql import GraphQLView
 from flask import json
 from flask import Response
@@ -21,9 +21,19 @@ app.add_url_rule(
         'graphql',
         schema          = schema,
         graphiql        = True, # for having the GraphiQL interface,
-        context_value   = {'session': db_session},
+        context_value   = {'session': db_session
+
+
+
+        },
     ),
 )
+
+@app.route('/')
+def info():
+    return render_template('info.html'
+    )
+
 
 @app.route('/testservice')
 def test():
