@@ -13,4 +13,5 @@ RUN pip install -r /app/requirements.txt
 
 ADD . /app
 
+CMD export GCLOUD_PROJECT=fire-193914
 CMD gunicorn -b :$PORT wsgi:app
