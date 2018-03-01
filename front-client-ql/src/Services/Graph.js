@@ -10,6 +10,9 @@ import configuration from '../config';
 
 config.set(configuration);
 
+export function configFor(key){
+  return config.get(key)
+}
 // graphQL
 export const apollo_client = new ApolloClient({
   link: new HttpLink({ uri: config.get('url_servicePma_graphql')}),

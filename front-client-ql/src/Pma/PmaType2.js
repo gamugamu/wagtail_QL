@@ -1,5 +1,5 @@
 import React from 'react';
-import {apollo_client, uploadfile} from '../Services/Graph.js'
+import {apollo_client, uploadfile, configFor} from '../Services/Graph.js'
 import gql from 'graphql-tag'
 import { graphql } from 'react-apollo';
 
@@ -34,7 +34,7 @@ export class Pmatype2 extends Pmatype1{
   static handleQuerieFindAllElmt(callback){
       var axios   = require('axios')
       let configJson = {
-        url: 'http://127.0.0.1:5000/graphql',
+        url: configFor('url_servicePma_graphql'),
         method: 'post',
         data: {
           query: `query gallery{
@@ -74,7 +74,7 @@ export class Pmatype2 extends Pmatype1{
       var id = (typeof this.state.id !== 'undefined')? this.state.id : 100
 
       let configJson = {
-      	url: 'http://127.0.0.1:5000/graphql',
+      	url: configFor('url_servicePma_graphql'),
       	method: 'post',
       	data: {
       		query: `mutation myMutation {
