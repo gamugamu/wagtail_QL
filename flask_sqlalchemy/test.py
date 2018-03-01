@@ -1,9 +1,13 @@
 # coding: utf-8
+from gcloud import bigquery
 from gcloud import storage
 from gcloud.storage import Blob
 import uuid
 
-client = storage.Client(project='fire-193914')
+client = storage.Client.from_service_account_json('application.json')
+#client = storage.Client(project='fire-193914')
+print "Did succeeds?"
+
 bucket = client.get_bucket('wagtailqlbucket')
 
 # note: ne gere pas les operations concurrentes. Le service

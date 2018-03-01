@@ -1,5 +1,4 @@
 FROM gcr.io/google_appengine/python
-
 RUN virtualenv /env
 
 # source venv/bin/activate
