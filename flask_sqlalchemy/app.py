@@ -8,7 +8,7 @@ from flask_cors import CORS
 
 from models import db_session
 from schema import schema
-from test import upload_to_default_bucket
+from bucket import upload_to_default_bucket
 
 app = Flask(__name__)
 CORS(app)

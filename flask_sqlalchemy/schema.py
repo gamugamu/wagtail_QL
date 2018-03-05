@@ -8,14 +8,14 @@ import time
 
 ##################### helper ######################
 
-def query_id_by_className(cls_name, id):
+def query_id_by_className(cls_name, id, create_if_not_found=True):
     cls = eval(cls_name)
     obj = None
 
     if id is not None:
         obj = db_session.query(cls).filter(cls.id == id).first()
     # ! else
-    if obj is None:
+    if obj is None and create_if_not_found:
         obj = cls()
 
     return obj
@@ -38,6 +38,19 @@ def date_duration_validation(obj, input):
         obj.date_end = input.date_end
 
     return obj
+
+##################### deletion ######################
+
+def delete_by_id(cls_name, id):
+    del_obj     = query_id_by_className(cls_name, id,create_if_not_found=False)
+    did_found   = 1 if del_obj is not None else 0
+
+    if did_found:
+        succeed = db_session.delete(del_obj)
+        db_session.commit()
+        db_session.expunge_all()
+
+    return did_found
 
 ##################### BASE ######################
 
@@ -166,6 +179,16 @@ class Mutate_Pma_gallery(graphene.Mutation):
 
         return Mutate_Pma_home(pma=pma)
 
+class Delete_Pma_gallery(graphene.Mutation):
+    class Arguments:
+        id =  graphene.Int(required=True)
+
+    state = graphene.Int()
+
+    @staticmethod
+    def mutate(self, info, id=-1):
+        return Delete_Pma_gallery(delete_by_id("Pma_galleryModel", id))
+
 ###################################################
 class Query(graphene.ObjectType):
     all_pma_home     = graphene.List(Pma_home)
@@ -182,5 +205,6 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     mutate_Pma_home     = Mutate_Pma_home.Field()
     mutate_Pma_gallery  = Mutate_Pma_gallery.Field()
+    delete_Pma_gallery  = Delete_Pma_gallery.Field()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
