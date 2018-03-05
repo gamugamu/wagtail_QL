@@ -55,7 +55,6 @@ export class Pmatype2 extends Pmatype1{
           }`
         }
     };
-    console.log("configJson -->", configJson);
     // swap bewteen configGraphQL and configJson (same response)
     axios(configJson).then(response => {
         callback(response.data.data["allPmaGallery"])
@@ -64,25 +63,48 @@ export class Pmatype2 extends Pmatype1{
     });
   }
 
+  // query display
+  static addNewElmt(callback){
+    var axios   = require('axios')
+    let configJson = {
+      url: configFor('url_servicePma_graphql'),
+      method: 'post',
+      data: {
+        query: `mutation myMutation {
+                  mutatePmaGallery(pmaData: {gallery: [{}]}) {
+                    pma {
+                      id
+                    }
+                  }
+                }`
+      }
+    };
+    // swap bewteen configGraphQL and configJson (same response)
+    axios(configJson).then(response => {
+      callback(response.data.data["pma"])
+    }).catch(err => {
+      console.log('graphql error:', err);
+    });
+  }
 
+  // update
   mutateFromActualState(){
       var axios   = require('axios');
       var gallery =  GQLStringifier.stringify(this.state.galleries, ["imageFile"])
       // application/json example
       /* eslint-disable no-unused-vars */
-      console.log("--->", this.state.id);
       var id = (typeof this.state.id !== 'undefined')? this.state.id : 100
 
       let configJson = {
       	url: configFor('url_servicePma_graphql'),
       	method: 'post',
       	data: {
-      		query: `mutation myMutation {
+      		query: `mutation m {
             mutatePmaGallery(pmaData: {
               id:` + id + `
               title:    ${JSON.stringify(this.state.title)},
               caption:  ${JSON.stringify(this.state.caption)},
-              isActive:  ${JSON.stringify(this.state.isActive)},
+              isActive: ${JSON.stringify(this.state.isActive)},
               gallery:  ${gallery}}) {
               pma{
                 title,
@@ -95,13 +117,36 @@ export class Pmatype2 extends Pmatype1{
           }`
       	}
     };
-    console.log("configJson -->", configJson);
     // swap bewteen configGraphQL and configJson (same response)
     axios(configJson).then(response => {
     	console.log('graphql response:', response.data);
     }).catch(err => {
     	console.log('graphql error:', err);
     });
+}
+
+// delete
+willDelete(){
+  var axios       = require('axios');
+  let configJson  = {
+    url: configFor('url_servicePma_graphql'),
+    method: 'post',
+    data: {
+      query: `mutation m {
+        deletePmaGallery(id:${this.state.id}){
+          state
+        }
+      }`
+    }
+  };
+  // swap bewteen configGraphQL and configJson (same response)
+  axios(configJson).then(response => {
+    console.log('graphql response:', response.data);
+  }).catch(err => {
+    console.log('graphql error:', err);
+  });
+
+  super.willDelete()
 }
 
 // display
@@ -132,7 +177,6 @@ export class Pmatype2 extends Pmatype1{
     var _this = this;
 
     uploadfile(cp_galleries[idx].imageFile[0], function(url, error){
-      console.log("image updated+++", url);
       cp_galleries[idx].urlImage = url
 
       _this.setState({
@@ -158,13 +202,9 @@ export class Pmatype2 extends Pmatype1{
       galleries: g,
       currentIndexSelected: idx
     })
-
-    console.log("this ", this.state.galleries);
   }
 
   onGalleryPageChange(idx){
-    console.log("onGalleryPageChange ", idx);
-
     this.setState({
       currentIndexSelected: idx
     })
@@ -179,10 +219,6 @@ export class Pmatype2 extends Pmatype1{
     this.setState({
         galleries: cp_galleries
     })
-  }
-
-  updateDispayForIdx(){
-
   }
 
   render() {

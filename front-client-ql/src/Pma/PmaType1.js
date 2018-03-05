@@ -18,8 +18,6 @@ export class Pmatype1 extends PmaBase{
       urlImage: "",
       urlRedirection: ""
     };
-    console.log("X-->", this.state);
-
   }
 
 // query display
@@ -55,7 +53,6 @@ export class Pmatype1 extends PmaBase{
 
     function makeMutation(_this, urlImage = ""){
       var axios   = require('axios');
-      console.log("-->", _this.state);
       // application/json example
       /* eslint-disable no-unused-vars */
       let configJson = {
@@ -76,7 +73,6 @@ export class Pmatype1 extends PmaBase{
           }`
         }
     };
-    console.log("configJson -->", configJson);
     // swap bewteen configGraphQL and configJson (same response)
     axios(configJson).then(response => {
       console.log('graphql response:', response.data);
@@ -88,7 +84,6 @@ export class Pmatype1 extends PmaBase{
 
 // display
   display(blob){
-    console.log("display blob", blob);
     if(typeof  blob !== 'function'){
       this.setState({
           id:             blob.id,

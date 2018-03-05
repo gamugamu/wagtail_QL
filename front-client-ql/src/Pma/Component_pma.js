@@ -6,34 +6,40 @@ export class PmaCollectionManager extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      pma: [],
+      pma: []
     };
     this.onAddPma       = this.onAddPma.bind(this)
-    this.onDeletePma    = this.onDeletePma.bind(this)
     this.updatePmaType  = this.updatePmaType.bind(this)
+    this.redisplay      = this.redisplay.bind(this)
   }
 
   updatePmaType(pmaType){
     // display le nombre d'object de ce type
+    // clean
     var _this = this
+    // update
     pmaType.handleQuerieFindAllElmt(function(data){
-          _this.setState({
-              typePma : pmaType,
-              pma: data
-          })
-        })
+      // Note: Reactjs est très débile.
+      _this.setState({
+          pma: []
+      })
+      _this.setState({
+          typePma : pmaType,
+          pma: data
+      })
+    })
+  }
+
+  redisplay(){
+    // display le nombre d'object de ce type
+    this.updatePmaType(this.state.typePma)
   }
 
   onAddPma(){
-    var newPma = this.state.pma.slice();
-    newPma.push(this.state.typePma);
-    this.setState({pma:newPma})
-  }
-
-  onDeletePma(idx){
-    var pma = this.state.pma.slice();
-    pma.shift()
-    this.setState({pma:pma})
+    var _this = this
+    this.state.typePma.addNewElmt(function(data){
+        _this.redisplay()
+    })
   }
 
   // timeLine support
@@ -51,8 +57,8 @@ export class PmaCollectionManager extends React.Component{
               <this.state.typePma
                 key           = {index}
                 pma           = {Item}
-                onDelete      = {()       => this.onDeletePma(index)}
                 onDateChange  = {(child)  => this.onDateChange(child)}
+                redisplay     = {()       => this.redisplay()}
                 />
               ))}
             </div>

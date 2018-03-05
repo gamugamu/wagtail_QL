@@ -2,6 +2,7 @@ import React from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
+import _ from 'underscore'
 
 // pma Base. Tout les pma héritent de pmaBase
 export class PmaBase extends React.Component{
@@ -17,6 +18,7 @@ export class PmaBase extends React.Component{
     this.handleChangeStart      = this.handleChangeStart.bind(this);
     this.handleChangeEnd        = this.handleChangeEnd.bind(this);
     this.mutateFromActualState  = this.mutateFromActualState.bind(this);
+    this.willDelete             = this.willDelete.bind(this);
   }
 
   componentDidMount(){
@@ -27,17 +29,29 @@ export class PmaBase extends React.Component{
     }.bind(this), 100);
   }
 
-// query display
+  // query display
   static handleQuerieFindAllElmt(callback){
       // template
   }
 
-// query mutate
+  // query display
+  static addNewElmt(callback){
+      // template
+  }
+
+  // query mutate
   mutateFromActualState(){
       // template
   }
 
-// display
+  // query delete
+  willDelete(){
+      // template et dois supprimer
+      // redisplay par le controller. Faible typage donc !
+      this.props.redisplay()
+  }
+
+  // display
   display(blob){
     // template
   }
@@ -173,7 +187,7 @@ export class PmaBase extends React.Component{
         <div className="col s6">
           <div className="row">
             <div className="col s6">
-              <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.props.onDelete} ><i className="material-icons">clear</i></a>
+              <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.willDelete} ><i className="material-icons">clear</i></a>
             </div>
             <div className="col s6">
               <a className="no-depth-float btn-floating btn-small waves-effect waves-light gray" onClick={this.mutateFromActualState} ><i className="material-icons">check</i></a>
