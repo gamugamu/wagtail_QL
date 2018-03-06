@@ -17,6 +17,8 @@ class gallery {
   }
 }
 
+const max_gallery = 6;
+
 export class Pmatype2 extends Pmatype1{
   constructor(props) {
     super(props);
@@ -190,18 +192,34 @@ willDelete(){
   }
 
   class_for_state(idx){
-    return (idx == this.state.currentIndexSelected)? "active" : "waves-effect"
+    return (idx == this.state.currentIndexSelected)? "active red" : ""
   }
 
   onAddingNewGallery(){
-    var g = this.state.galleries.slice()
-    g.push(new gallery())
-    var idx = g.length - 1
+    console.log("fe",this.state.galleries.length, max_gallery);
+    if(this.state.galleries.length < max_gallery){
+      var g = this.state.galleries.slice()
+      g.push(new gallery())
+      var idx = g.length - 1
 
-    this.setState({
-      galleries: g,
-      currentIndexSelected: idx
-    })
+      this.setState({
+        galleries: g,
+        currentIndexSelected: idx
+      })
+    }
+  }
+
+  onDeletingGallery(idx){
+    if(idx >= 1){
+      var g = this.state.galleries.slice()
+      g.splice(idx, 1)
+      idx--
+
+      this.setState({
+        galleries: g,
+        currentIndexSelected: idx
+      })
+    }
   }
 
   onGalleryPageChange(idx){
@@ -226,19 +244,8 @@ willDelete(){
      <div className="row oneLine">
        <div className="col">
          <div className="card pma-card-block">
-             <div>
-                <a className="btn-floating btn-small waves-effect waves-light red" onClick={(e) => this.onAddingNewGallery()}>
-                  <i className="material-icons">add</i>
-                </a>
-                <ul className="pagination">
-                <div>
-                {this.state.galleries.map((gallery, idx) =>
-                  <li key={"g" + idx} className={this.class_for_state(idx)}><a href="#!" onClick={(e) => this.onGalleryPageChange(idx)}>{idx + 1}</a></li>
-                )}
-                </div>
-                </ul>
-             </div>
              <div className="gallery-content">
+                {this.r_gallery(this.state.currentIndexSelected)}
                 {this.r_cardImage(this.state.currentIndexSelected, this.url_image_forIndex(this.state.currentIndexSelected))}
                 {this.r_title(this.state.currentIndexSelected, "title", this.state.galleries[this.state.currentIndexSelected].title)}
                 {this.r_caption(this.state.currentIndexSelected, "caption", this.state.galleries[this.state.currentIndexSelected].caption)}
@@ -267,6 +274,32 @@ willDelete(){
     )
   }
 
+  r_gallery = (idx, key, value) => {
+    return(
+      <div class="row paginationBkg valign-wrapper">
+      <div class="col s3">
+        <a className="left btn_add btn red z-depth-0" onClick={(e) => this.onAddingNewGallery()}>
+          <i className="large material-icons">add</i>
+        </a>
+      </div>
+      <div class="col s6">
+        <ul className="left pagination ">
+          <div className=" paginationumber blue-text">
+            {this.state.galleries.map((gallery, idx) =>
+              <li key={"g" + idx} className={this.class_for_state(idx)}><a className="white-text" onClick={(e) => this.onGalleryPageChange(idx)}>{idx + 1}</a></li>
+            )}
+          </div>
+        </ul>
+      </div>
+      <div class="col s3">
+        <a className="btn z-depth-0" onClick={(e) => this.onDeletingGallery(idx)}>
+          <i className="material-icons">clear</i>
+        </a>
+      </div>
+    </div>
+    )
+  }
+
   r_caption = (idx, key, value) => {
     return(
       <div className="input-field">
@@ -285,9 +318,7 @@ willDelete(){
               accept          = "image/jpeg,image/jpg,image/tiff,image/gif,image/png"
               multiple        = {false}
               onDropRejected  = {this.handleDropRejected}>
-              <div>
-                <img className="dragAndDropArea" src={source} key={'k' + idx} alt=""/>
-              </div>
+              <img className="dragAndDropArea" src={source} key={'k' + idx} alt=""/>
           </Dropzone>
         </div>
     )

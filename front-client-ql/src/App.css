@@ -30,6 +30,7 @@
 /**/
 .pma-card-block{
   width:350px;
+  margin-bottom: 80px;
 }
 
 .collection{
@@ -121,8 +122,15 @@ textarea.materialize-textarea{
 }
 
 .gallery-content {
-  margin: 10px;
   background-color: AliceBlue ;
+  border-style: dotted;
+  border-width: 1px;
+  border-color: CadetBlue;
+}
+
+.card-image{
+  margin-bottom: 20px;
+  margin-top: -20px;
 }
 
 .big{
@@ -132,4 +140,18 @@ textarea.materialize-textarea{
 
 .delete-button{
   width: 100%;
+}
+
+.pagination{
+  margin: 0px;
+  width: 100%;
+}
+.btn_add{
+  margin-left: -10px;
+}
+.paginationumber{
+}
+
+.paginationBkg{
+  background-color: LightSeaGreen  ;
 }

@@ -94,7 +94,6 @@ static handleQuerieFindAllElmt(callback){
 
   // query display
   static addNewElmt(callback){
-    console.log("add nex elmt");
     var axios   = require('axios')
     let configJson = {
       url: configFor('url_servicePma_graphql'),
@@ -120,7 +119,6 @@ static handleQuerieFindAllElmt(callback){
 
   // delete
   willDelete(){
-    console.log("+++++ will delete");
     var axios       = require('axios');
     let configJson  = {
       url: configFor('url_servicePma_graphql'),
