@@ -1,5 +1,7 @@
 import React from 'react';
 import {TimelinePma} from '../GUI/TimelinePma.js'
+import HorizontalScroll from 'react-scroll-horizontal'
+import ReactDOM from 'react-dom';
 
 // gere les collection de pma
 export class PmaCollectionManager extends React.Component{
@@ -49,12 +51,31 @@ export class PmaCollectionManager extends React.Component{
     this.timeLine.renderTimeline(state.id, state.dateStart, state.dateEnd, state.title)
   }
 
+  onClick(event) {
+//    console.log("---> dropMen",     ReactDOM.findDOMNode(this.refs.scroller));
+    var dropMen =  ReactDOM.findDOMNode(this.refs.scroller)
+    var specs = dropMen.getBoundingClientRect();
+
+  }
+
+  handleScroll(event) {
+  //  console.log("---> handleScroll", event);
+  }
+
+  _onMouseMove(e) {
+    //console.log(e.screenX); // => nullified object.
+   }
+
   render() {
     return (
       <div>
-        <div id="scroller-wrapper">
-          <div id="scroller">
-            <a className="waves-effect waves-light btn" onClick={this.onAddPma}>new</a>
+        <div className="adder">
+          <a className="waves-effect waves-light red btn" onClick={this.onAddPma}>new</a>
+        </div>
+
+
+        <div id="scroller-wrapper" onScroll={this.handleScroll}>
+          <div id="scroller"  ref="scroller" onClick={this.onClick.bind(this)} onMouseMove={this._onMouseMove.bind(this)}>
             {this.state.pma.map((Item, index) => (
               <this.state.typePma
                 key           = {index}
@@ -63,11 +84,11 @@ export class PmaCollectionManager extends React.Component{
                 redisplay     = {()       => this.redisplay()}
                 />
               ))}
-            </div>
           </div>
-          <TimelinePma
-            ref = {(timeLine) => { this.timeLine = timeLine; }}
-          />
+        </div>
+        <TimelinePma
+          ref = {(timeLine) => { this.timeLine = timeLine; }}
+        />
       </div>
     );
   }

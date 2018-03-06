@@ -121,11 +121,21 @@ textarea.materialize-textarea{
     background-color: #FF5252 !important;
 }
 
+.adder{
+    background-color: red;
+    color: blue;
+    width: 200px;
+}
+
 .gallery-content {
   background-color: AliceBlue ;
-  border-style: dotted;
+  border-style: dashed;
   border-width: 1px;
-  border-color: CadetBlue;
+  border-color: LightGray ;
+}
+
+.gallery_data{
+  margin: 10px;
 }
 
 .card-image{
@@ -146,6 +156,7 @@ textarea.materialize-textarea{
   margin: 0px;
   width: 100%;
 }
+
 .btn_add{
   margin-left: -10px;
 }

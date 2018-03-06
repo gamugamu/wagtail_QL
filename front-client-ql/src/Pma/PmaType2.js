@@ -243,12 +243,15 @@ willDelete(){
      return (
      <div className="row oneLine">
        <div className="col">
-         <div className="card pma-card-block">
+         <div className="card pma-card-block hoverable">
              <div className="gallery-content">
                 {this.r_gallery(this.state.currentIndexSelected)}
                 {this.r_cardImage(this.state.currentIndexSelected, this.url_image_forIndex(this.state.currentIndexSelected))}
-                {this.r_title(this.state.currentIndexSelected, "title", this.state.galleries[this.state.currentIndexSelected].title)}
-                {this.r_caption(this.state.currentIndexSelected, "caption", this.state.galleries[this.state.currentIndexSelected].caption)}
+
+                <div className="gallery_data">
+                  {this.r_title(this.state.currentIndexSelected, "title", this.state.galleries[this.state.currentIndexSelected].title)}
+                  {this.r_caption(this.state.currentIndexSelected, "caption", this.state.galleries[this.state.currentIndexSelected].caption)}
+                </div> {/* gallery_data */}
              </div> {/* gallery-content */}
            <div className="card-content">
              {this.r_date()}
@@ -277,25 +280,25 @@ willDelete(){
   r_gallery = (idx, key, value) => {
     return(
       <div class="row paginationBkg valign-wrapper">
-      <div class="col s3">
-        <a className="left btn_add btn red z-depth-0" onClick={(e) => this.onAddingNewGallery()}>
-          <i className="large material-icons">add</i>
-        </a>
-      </div>
-      <div class="col s6">
-        <ul className="left pagination ">
-          <div className=" paginationumber blue-text">
-            {this.state.galleries.map((gallery, idx) =>
-              <li key={"g" + idx} className={this.class_for_state(idx)}><a className="white-text" onClick={(e) => this.onGalleryPageChange(idx)}>{idx + 1}</a></li>
-            )}
-          </div>
-        </ul>
-      </div>
-      <div class="col s3">
-        <a className="btn z-depth-0" onClick={(e) => this.onDeletingGallery(idx)}>
-          <i className="material-icons">clear</i>
-        </a>
-      </div>
+        <div class="col s3">
+          <a className="left btn_add btn red z-depth-0" onClick={(e) => this.onAddingNewGallery()}>
+            <i className="large material-icons">add</i>
+          </a>
+        </div>
+        <div class="col s6">
+          <ul className="left pagination ">
+            <div className=" paginationumber blue-text">
+              {this.state.galleries.map((gallery, idx) =>
+                <li key={"g" + idx} className={this.class_for_state(idx)}><a className="white-text" onClick={(e) => this.onGalleryPageChange(idx)}>{idx + 1}</a></li>
+              )}
+            </div>
+          </ul>
+        </div>
+        <div class="col s3">
+          <a className="btn z-depth-0" onClick={(e) => this.onDeletingGallery(idx)}>
+            <i className="material-icons">clear</i>
+          </a>
+        </div>
     </div>
     )
   }
