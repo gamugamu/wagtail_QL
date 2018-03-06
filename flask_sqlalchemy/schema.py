@@ -112,6 +112,16 @@ class Mutate_Pma_home(graphene.Mutation):
 
         return Mutate_Pma_home(pma=pma)
 
+class Delete_Pma_home(graphene.Mutation):
+    class Arguments:
+        id =  graphene.Int(required=True)
+
+    state = graphene.Int()
+
+    @staticmethod
+    def mutate(self, info, id=-1):
+        return Delete_Pma_gallery(delete_by_id("Pma_homeModel", id))
+
 ################### GALLERY_PMA #####################
 def mutate_gallery_components(pma, pma_data):
     lenght      = len(pma_data["gallery"]) - len(pma.gallery)
@@ -204,6 +214,8 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     mutate_Pma_home     = Mutate_Pma_home.Field()
+    delete_Pma_home     = Delete_Pma_home.Field()
+
     mutate_Pma_gallery  = Mutate_Pma_gallery.Field()
     delete_Pma_gallery  = Delete_Pma_gallery.Field()
 

@@ -20,6 +20,7 @@ export class PmaCollectionManager extends React.Component{
     // update
     pmaType.handleQuerieFindAllElmt(function(data){
       // Note: Reactjs est très débile.
+      console.log("handleQuerieFindAllElmt update----");
       _this.setState({
           pma: []
       })
@@ -32,6 +33,7 @@ export class PmaCollectionManager extends React.Component{
 
   redisplay(){
     // display le nombre d'object de ce type
+    console.log("----- redisplay");
     this.updatePmaType(this.state.typePma)
   }
 

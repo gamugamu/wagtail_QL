@@ -1,5 +1,5 @@
 import React from 'react';
-import {apollo_client, uploadfile} from '../Services/Graph.js'
+import {apollo_client, uploadfile, configFor} from '../Services/Graph.js'
 import gql from 'graphql-tag'
 import _ from 'underscore'
 import moment from 'moment';
@@ -21,9 +21,14 @@ export class Pmatype1 extends PmaBase{
   }
 
 // query display
-  static handleQuerieFindAllElmt(callback){
-    apollo_client.query({ query: gql`
-      {allPmaHome{
+static handleQuerieFindAllElmt(callback){
+    var axios   = require('axios')
+    let configJson = {
+      url: configFor('url_servicePma_graphql'),
+      method: 'post',
+      data: {
+        query: `query gallery{
+          allPmaHome{
             id
             title
             caption
@@ -32,12 +37,17 @@ export class Pmatype1 extends PmaBase{
             dateEnd
             category
             urlImage
-          }
-      }`}).then(({ data }) => {
-        console.log("retrieve", data);
-          callback(data["allPmaHome"])
-      });
-  }
+            }
+        }`
+      }
+  };
+  // swap bewteen configGraphQL and configJson (same response)
+  axios(configJson).then(response => {
+      callback(response.data.data["allPmaHome"])
+  }).catch(err => {
+    console.log('graphql error:', err);
+  });
+}
 
 // query mutate
   mutateFromActualState(){
@@ -80,6 +90,57 @@ export class Pmatype1 extends PmaBase{
       console.log('graphql error:', err);
     });
     }
+  }
+
+  // query display
+  static addNewElmt(callback){
+    console.log("add nex elmt");
+    var axios   = require('axios')
+    let configJson = {
+      url: configFor('url_servicePma_graphql'),
+      method: 'post',
+      data: {
+        query: `mutation pmaHome {
+                  mutatePmaHome(pmaData: {title: "", caption: ""}) {
+                    pma {
+                      title
+                      caption
+                    }
+                  }
+                }`
+      }
+    };
+    // swap bewteen configGraphQL and configJson (same response)
+    axios(configJson).then(response => {
+      callback(response.data.data["pma"])
+    }).catch(err => {
+      console.log('graphql error:', err);
+    });
+  }
+
+  // delete
+  willDelete(){
+    console.log("+++++ will delete");
+    var axios       = require('axios');
+    let configJson  = {
+      url: configFor('url_servicePma_graphql'),
+      method: 'post',
+      data: {
+        query: `mutation m {
+          deletePmaHome(id:${this.state.id}){
+            state
+          }
+        }`
+      }
+    };
+    // swap bewteen configGraphQL and configJson (same response)
+    axios(configJson).then(response => {
+      console.log('graphql response:', response.data);
+    }).catch(err => {
+      console.log('graphql error:', err);
+    });
+
+    super.willDelete()
   }
 
 // display
