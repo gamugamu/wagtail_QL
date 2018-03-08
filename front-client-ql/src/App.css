@@ -157,12 +157,20 @@ textarea.materialize-textarea{
   width: 100%;
 }
 
-.btn_add{
-  margin-left: -10px;
+.btn_add_minus{
+  margin-left: -11px;
+  margin-right: -58px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
+
 .paginationumber{
 }
 
 .paginationBkg{
-  background-color: LightSeaGreen  ;
+  background-color: LightSeaGreen;
+}
+
+.test{
+
 }

@@ -245,9 +245,8 @@ willDelete(){
        <div className="col">
          <div className="card pma-card-block hoverable">
              <div className="gallery-content">
-                {this.r_gallery(this.state.currentIndexSelected)}
-                {this.r_cardImage(this.state.currentIndexSelected, this.url_image_forIndex(this.state.currentIndexSelected))}
-
+                  {this.r_indexes(this.state.currentIndexSelected)}
+                  {this.r_cardImage(this.state.currentIndexSelected, this.url_image_forIndex(this.state.currentIndexSelected))}
                 <div className="gallery_data">
                   {this.r_title(this.state.currentIndexSelected, "title", this.state.galleries[this.state.currentIndexSelected].title)}
                   {this.r_caption(this.state.currentIndexSelected, "caption", this.state.galleries[this.state.currentIndexSelected].caption)}
@@ -277,15 +276,15 @@ willDelete(){
     )
   }
 
-  r_gallery = (idx, key, value) => {
+  r_indexes = (idx, key, value) => {
     return(
       <div class="row paginationBkg valign-wrapper">
-        <div class="col s3">
-          <a className="left btn_add btn red z-depth-0" onClick={(e) => this.onAddingNewGallery()}>
+        <div class="col m3 test">
+          <a className="left btn_add_minus btn red z-depth-0" onClick={(e) => this.onAddingNewGallery()}>
             <i className="large material-icons">add</i>
           </a>
         </div>
-        <div class="col s6">
+        <div class="col m6">
           <ul className="left pagination ">
             <div className=" paginationumber blue-text">
               {this.state.galleries.map((gallery, idx) =>
@@ -294,8 +293,8 @@ willDelete(){
             </div>
           </ul>
         </div>
-        <div class="col s3">
-          <a className="btn z-depth-0" onClick={(e) => this.onDeletingGallery(idx)}>
+        <div class="col m3 test">
+          <a className="btn btn_add_minus z-depth-0" onClick={(e) => this.onDeletingGallery(idx)}>
             <i className="material-icons">clear</i>
           </a>
         </div>

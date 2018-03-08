@@ -72,8 +72,6 @@ export class PmaCollectionManager extends React.Component{
         <div className="adder">
           <a className="waves-effect waves-light red btn" onClick={this.onAddPma}>new</a>
         </div>
-
-
         <div id="scroller-wrapper" onScroll={this.handleScroll}>
           <div id="scroller"  ref="scroller" onClick={this.onClick.bind(this)} onMouseMove={this._onMouseMove.bind(this)}>
             {this.state.pma.map((Item, index) => (
