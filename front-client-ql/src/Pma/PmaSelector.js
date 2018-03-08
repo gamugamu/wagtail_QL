@@ -14,9 +14,15 @@ export class PmaSelector extends React.Component{
     }
   }
 
+  test(){
+    console.log("ok   +++");
+  }
+
   render() {
       return (
         <div>
+            <img src="smartphone_cat.png" alt="Mountain View" onClick={this.test}/>
+
             <a className="waves-effect waves-light btn" onClick={this.props.onSelection.bind(this, Pmatype1)}>button</a>
             <a className="waves-effect waves-light btn" onClick={this.props.onSelection.bind(this, Pmatype2)}><i className="material-icons left">cloud</i>button</a>
             <a className="waves-effect waves-light btn" onClick={this.props.onSelection.bind(this, "pma_2")}><i className="material-icons right">cloud</i>button</a>
