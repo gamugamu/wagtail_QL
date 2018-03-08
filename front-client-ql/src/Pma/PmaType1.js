@@ -1,6 +1,5 @@
 import React from 'react';
-import {apollo_client, uploadfile, configFor} from '../Services/Graph.js'
-import gql from 'graphql-tag'
+import {uploadfile, configFor} from '../Services/Graph.js'
 import _ from 'underscore'
 import moment from 'moment';
 import {PmaBase} from './PmaBase.js'

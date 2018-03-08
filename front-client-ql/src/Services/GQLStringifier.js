@@ -20,7 +20,7 @@ export class GQLStringifier{
         if (obj.hasOwnProperty(someKey)){
           //var myActualPropFromObj = obj[someKey];
           //var shouldBeBar = myActualPropFromObj.b;
-          if(someKey.substring(0, 2) != "__"){
+          if(someKey.substring(0, 2) !== "__"){
             // include logique
             if(include.length !== 0){
                if(include.indexOf(someKey) > -1){
@@ -44,7 +44,7 @@ export class GQLStringifier{
   }
 
   static lastOperatorCheck(elm){
-    if(elm.charAt(elm.length - 1) == ','){
+    if(elm.charAt(elm.length - 1) === ','){
       elm = elm.substring(0, elm.length - 1);
     }
 

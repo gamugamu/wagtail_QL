@@ -2,7 +2,6 @@ import React from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
-import _ from 'underscore'
 
 // pma Base. Tout les pma héritent de pmaBase
 export class PmaBase extends React.Component{

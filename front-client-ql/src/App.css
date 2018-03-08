@@ -67,9 +67,42 @@
 }
 
 #scroller {
-    height: 100%;
+    padding-top: 80px;
     overflow-x: auto;
     white-space: nowrap;
+    overflow:hidden;
+}
+
+.timeLine_on{
+  width: 100%;
+  visibility: initial;
+  margin-left: 0px;
+}
+
+.timeLine_off{
+  width: 0px;
+  margin-left: -2px;
+  visibility: collapse;
+}
+
+.btn_adder{
+  position: absolute;
+  left: 20px;
+}
+
+.btn_adder > i{
+  color: white;
+  font-size: 30px;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }
 
 .oneLine{

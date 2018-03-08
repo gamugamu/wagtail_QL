@@ -1,7 +1,6 @@
 import React from 'react';
 import {TimelinePma} from '../GUI/TimelinePma.js'
-import HorizontalScroll from 'react-scroll-horizontal'
-import ReactDOM from 'react-dom';
+import {Scroller} from '../GUI/Scroller.js'
 
 // gere les collection de pma
 export class PmaCollectionManager extends React.Component{
@@ -13,6 +12,7 @@ export class PmaCollectionManager extends React.Component{
     this.onAddPma       = this.onAddPma.bind(this)
     this.updatePmaType  = this.updatePmaType.bind(this)
     this.redisplay      = this.redisplay.bind(this)
+    this.scroller       = new Scroller()
   }
 
   updatePmaType(pmaType){
@@ -22,7 +22,6 @@ export class PmaCollectionManager extends React.Component{
     // update
     pmaType.handleQuerieFindAllElmt(function(data){
       // Note: Reactjs est très débile.
-      console.log("handleQuerieFindAllElmt update----");
       _this.setState({
           pma: []
       })
@@ -35,7 +34,6 @@ export class PmaCollectionManager extends React.Component{
 
   redisplay(){
     // display le nombre d'object de ce type
-    console.log("----- redisplay");
     this.updatePmaType(this.state.typePma)
   }
 
@@ -51,29 +49,27 @@ export class PmaCollectionManager extends React.Component{
     this.timeLine.renderTimeline(state.id, state.dateStart, state.dateEnd, state.title)
   }
 
-  onClick(event) {
-//    console.log("---> dropMen",     ReactDOM.findDOMNode(this.refs.scroller));
-    var dropMen =  ReactDOM.findDOMNode(this.refs.scroller)
-    var specs = dropMen.getBoundingClientRect();
-
+  hideFromState(shouldHide, string, comp_0, comp_1){
+    var state = shouldHide? comp_0 : comp_1
+    return string + state
   }
 
-  handleScroll(event) {
-  //  console.log("---> handleScroll", event);
+  isActive(){
+    return (this.state.pma.length !== 0)
   }
-
-  _onMouseMove(e) {
-    //console.log(e.screenX); // => nullified object.
-   }
 
   render() {
     return (
       <div>
-        <div className="adder">
-          <a className="waves-effect waves-light red btn" onClick={this.onAddPma}>new</a>
-        </div>
-        <div id="scroller-wrapper" onScroll={this.handleScroll}>
-          <div id="scroller"  ref="scroller" onClick={this.onClick.bind(this)} onMouseMove={this._onMouseMove.bind(this)}>
+        <a className={this.hideFromState(this.isActive(), "left btn_adder waves-effect waves-light red btn", "", " hide")} onClick={this.onAddPma}>
+          <i className="material-icons left">add_circle</i>Ajout gallerie
+        </a>
+        <div className="noselect" id="scroller-wrapper" onScroll={this.handleScroll}>
+          <div id="scroller" ref="scroller"
+            onMouseUp     = {((e) => this.scroller.onMouseUp(e, this.refs.scroller))}
+            onMouseDown   = {((e) => this.scroller.onMouseDown(e, this.refs.scroller))}
+            onMouseMove   = {((e) => this.scroller.onMouseMove(e, this.refs.scroller))}
+            onMouseLeave  = {((e) => this.scroller.onMouseLeave(e, this.refs.scroller))}>
             {this.state.pma.map((Item, index) => (
               <this.state.typePma
                 key           = {index}
@@ -84,9 +80,12 @@ export class PmaCollectionManager extends React.Component{
               ))}
           </div>
         </div>
-        <TimelinePma
-          ref = {(timeLine) => { this.timeLine = timeLine; }}
-        />
+        <div className= {this.hideFromState(this.isActive(), "", "timeLine_on", "timeLine_off")}>
+          <TimelinePma
+            ref       = {(timeLine) => { this.timeLine = timeLine }}
+            isActive  = {this.isActive()}
+          />
+        </div>
       </div>
     );
   }

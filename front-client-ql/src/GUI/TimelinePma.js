@@ -65,9 +65,12 @@ export class TimelinePma extends React.Component{
 
   render() {
     return (
-          <Timeline
-            options   = {timelineOptions}
-            items     = {this.state.timelineItems}/>
+          <div>
+            <Timeline
+              options   = {timelineOptions}
+              items     = {this.state.timelineItems}/>
+          </div>
+
     );
   }
 

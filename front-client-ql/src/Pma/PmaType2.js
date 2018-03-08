@@ -1,7 +1,5 @@
 import React from 'react';
-import {apollo_client, uploadfile, configFor} from '../Services/Graph.js'
-import gql from 'graphql-tag'
-import { graphql } from 'react-apollo';
+import {uploadfile, configFor} from '../Services/Graph.js'
 
 import {GQLStringifier} from '../Services/GQLStringifier.js'
 import {Pmatype1} from './PmaType1.js'
@@ -192,7 +190,7 @@ willDelete(){
   }
 
   class_for_state(idx){
-    return (idx == this.state.currentIndexSelected)? "active red" : ""
+    return (idx === this.state.currentIndexSelected)? "active red" : ""
   }
 
   onAddingNewGallery(){
@@ -278,13 +276,13 @@ willDelete(){
 
   r_indexes = (idx, key, value) => {
     return(
-      <div class="row paginationBkg valign-wrapper">
-        <div class="col m3 test">
+      <div className="row paginationBkg valign-wrapper">
+        <div className="col m3 test">
           <a className="left btn_add_minus btn red z-depth-0" onClick={(e) => this.onAddingNewGallery()}>
             <i className="large material-icons">add</i>
           </a>
         </div>
-        <div class="col m6">
+        <div className="col m6">
           <ul className="left pagination ">
             <div className=" paginationumber blue-text">
               {this.state.galleries.map((gallery, idx) =>
@@ -293,7 +291,7 @@ willDelete(){
             </div>
           </ul>
         </div>
-        <div class="col m3 test">
+        <div className="col m3">
           <a className="btn btn_add_minus z-depth-0" onClick={(e) => this.onDeletingGallery(idx)}>
             <i className="material-icons">clear</i>
           </a>
