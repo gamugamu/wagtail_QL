@@ -2,17 +2,20 @@
 # flask_sqlalchemy/schema.py
 import graphene
 from graphene import relay
+from graphql import GraphQLError
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from models import db_session, DBHelper, Pma_base as Pma_baseModel, Pma_home as Pma_homeModel, Pma_gallery as Pma_galleryModel, Gallery as GalleryModel
 from models import User as UserModel
 from dateutil import parser
 import time
 from sqlalchemy import and_
+import hashlib
 
 ##################### helper ######################
 
 def query_user(user):
-    user = db_session.query(UserModel).filter(and_(UserModel.name == user.name, UserModel.hash_pass == user.password)).first()
+    hash_pass   = hashlib.sha224(user.password).hexdigest()
+    user        = db_session.query(UserModel).filter(and_(UserModel.name == user.name, UserModel.hash_pass == hash_pass)).first()
     print "query_user ", user
     return user is not None
 
@@ -106,22 +109,22 @@ class Mutate_User(graphene.Mutation):
         user    = User_input(required=True)
         admin   = User_input(required=False)
 
-    user    = graphene.Field(User)
+    user = graphene.Field(User)
 
     @staticmethod
     def mutate(self, info, user=None, admin=None):
         # User ne peut être créer que sous 2 condition: Il n'existe
         # aucun compte, et le premier compte créer et le compte admin.
         # Seul le compte admin peut creer un compte
-        print "Create User --> ", db_session.query(UserModel).count()
         count = db_session.query(UserModel).count()
         if count == 0:
-            print "can create"
-            user = UserModel(name=user.name, hash_pass=user.password)
+            hash_pass   = hashlib.sha224(user.password).hexdigest()
+            user        = UserModel(name=user.name, hash_pass=hash_pass)
             DBHelper.fast_commit(user)
         else:
-            print "check user"
-
+            user = db_session.query(UserModel).filter(and_(UserModel.name == user.name, UserModel.hash_pass == user.password)).first()
+            if(user is not None):
+                print "can create"
 
 ################### HOME_PMA #####################
 
@@ -135,21 +138,25 @@ class Pma_home_input(Pma_base_input):
 class Mutate_Pma_home(graphene.Mutation):
     class Arguments:
         pma_data = Pma_home_input(required=True)
+        user     = User_input(required=True)
 
     pma = graphene.Field(Pma_home)
 
     @staticmethod
-    def mutate(self, info, pma_data=None):
-        pma = query_id_by_className("Pma_homeModel", pma_data.id)
-        pma = map_value_from_input(pma, pma_data)
-        pma = date_duration_validation(pma, pma_data)
+    def mutate(self, info, pma_data=None, user=None):
+        if query_user(user):
+            pma = query_id_by_className("Pma_homeModel", pma_data.id)
+            pma = map_value_from_input(pma, pma_data)
+            pma = date_duration_validation(pma, pma_data)
 
-        DBHelper.fast_commit(pma)
+            DBHelper.fast_commit(pma)
 
-        if pma.date_start is not None:
-            print"from DB", pma.date_start
+            if pma.date_start is not None:
+                print"from DB", pma.date_start
 
-        return Mutate_Pma_home(pma=pma)
+            return Mutate_Pma_home(pma=pma)
+        else:
+            raise GraphQLError('You need the right permission in order to mutate')
 
 class Delete_Pma_home(graphene.Mutation):
     class Arguments:
@@ -214,22 +221,25 @@ class Mutate_Pma_gallery(graphene.Mutation):
         user     = User_input(required=True)
 
     pma     = graphene.Field(Pma_gallery)
-    user    = graphene.Field(User)
 
     @staticmethod
     def mutate(self, info, pma_data=None, user=None):
-        print "Auth --> ", User()
-        pma = query_id_by_className("Pma_galleryModel", pma_data.id)
-        pma = map_value_from_input(pma, pma_data, exclude=["gallery"])
-        pma = date_duration_validation(pma, pma_data)
-        pma = mutate_gallery_components(pma, pma_data)
+        print "Auth --> ", query_user(user)
+        if query_user(user):
+            pma = query_id_by_className("Pma_galleryModel", pma_data.id)
+            pma = map_value_from_input(pma, pma_data, exclude=["gallery"])
+            pma = date_duration_validation(pma, pma_data)
+            pma = mutate_gallery_components(pma, pma_data)
 
-        DBHelper.fast_commit(pma)
+            DBHelper.fast_commit(pma)
+            print "Mutate_Pma_gallery"
 
-        if pma.date_start is not None:
-            print"from DB", pma.date_start
+            if pma.date_start is not None:
+                print"from DB", pma.date_start
 
-        return Mutate_Pma_home(pma=pma)
+            return Mutate_Pma_home(pma=pma)
+        else:
+            raise GraphQLError('You need the right permission in order to mutate')
 
 class Delete_Pma_gallery(graphene.Mutation):
     class Arguments:
