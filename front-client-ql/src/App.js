@@ -22,14 +22,19 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header"></header>
+        <header className="App-header">
+          <p id="App-subheader">Kiabi pma Admin</p>
+        </header>
         <p className="App-intro"></p>
+        <img src={require('./static/Kiabi-logo.png')} alt="kiabilogo" width="200px"/>
         <PmaSelector
           onSelection = {this.onSelection}
         />
         <PmaCollectionManager
           ref = {(pmaCollection) => { this.pmaCollection = pmaCollection}}
         />
+        <footer id="App-footer">
+        </footer>
       </div>
     );
   }

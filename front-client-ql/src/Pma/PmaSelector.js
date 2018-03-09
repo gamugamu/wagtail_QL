@@ -20,12 +20,11 @@ export class PmaSelector extends React.Component{
 
   render() {
       return (
-        <div>
-            <img src="smartphone_cat.png" alt="Mountain View" onClick={this.test}/>
-
-            <a className="waves-effect waves-light btn" onClick={this.props.onSelection.bind(this, Pmatype1)}>button</a>
-            <a className="waves-effect waves-light btn" onClick={this.props.onSelection.bind(this, Pmatype2)}><i className="material-icons left">cloud</i>button</a>
-            <a className="waves-effect waves-light btn" onClick={this.props.onSelection.bind(this, "pma_2")}><i className="material-icons right">cloud</i>button</a>
+        <div id="wrapped_home_selector" className="center-align">
+            <div id="tesst_0" className="center_selector hoverable" onClick={this.props.onSelection.bind(this, Pmatype1)}/>
+            <div id="tesst_1" className="center_selector hoverable" onClick={this.props.onSelection.bind(this, Pmatype2)}/>
+            <div id="tesst_2" className="center_selector hoverable" onClick={this.props.onSelection.bind(this, "pma_2")}/>
+            <img src={require('../static/smartphone_cat.png')} alt="Mountain View" onClick={this.test}/>
         </div>
       );
     }
