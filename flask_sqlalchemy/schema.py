@@ -1,12 +1,20 @@
+# coding: utf-8
 # flask_sqlalchemy/schema.py
 import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from models import db_session, DBHelper, Pma_base as Pma_baseModel, Pma_home as Pma_homeModel, Pma_gallery as Pma_galleryModel, Gallery as GalleryModel
+from models import User as UserModel
 from dateutil import parser
 import time
+from sqlalchemy import and_
 
 ##################### helper ######################
+
+def query_user(user):
+    user = db_session.query(UserModel).filter(and_(UserModel.name == user.name, UserModel.hash_pass == user.password)).first()
+    print "query_user ", user
+    return user is not None
 
 def query_id_by_className(cls_name, id, create_if_not_found=True):
     cls = eval(cls_name)
@@ -83,6 +91,37 @@ class Pma_base(SQLAlchemyObjectType):
             return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time()))
         else:
             return self.date_end
+
+################### AUTH #####################
+class User(SQLAlchemyObjectType):
+    class Meta:
+        model = UserModel
+
+class User_input(graphene.InputObjectType):
+    name           = graphene.String(required=True)
+    password       = graphene.String(required=True)
+
+class Mutate_User(graphene.Mutation):
+    class Arguments():
+        user    = User_input(required=True)
+        admin   = User_input(required=False)
+
+    user    = graphene.Field(User)
+
+    @staticmethod
+    def mutate(self, info, user=None, admin=None):
+        # User ne peut être créer que sous 2 condition: Il n'existe
+        # aucun compte, et le premier compte créer et le compte admin.
+        # Seul le compte admin peut creer un compte
+        print "Create User --> ", db_session.query(UserModel).count()
+        count = db_session.query(UserModel).count()
+        if count == 0:
+            print "can create"
+            user = UserModel(name=user.name, hash_pass=user.password)
+            DBHelper.fast_commit(user)
+        else:
+            print "check user"
+
 
 ################### HOME_PMA #####################
 
@@ -170,13 +209,16 @@ class Pma_gallery_input(Pma_base_input):
     #gallery  = graphene.List(Gallery)
 
 class Mutate_Pma_gallery(graphene.Mutation):
-    class Arguments:
+    class Arguments():
         pma_data = Pma_gallery_input(required=True)
+        user     = User_input(required=True)
 
-    pma = graphene.Field(Pma_gallery)
+    pma     = graphene.Field(Pma_gallery)
+    user    = graphene.Field(User)
 
     @staticmethod
-    def mutate(self, info, pma_data=None):
+    def mutate(self, info, pma_data=None, user=None):
+        print "Auth --> ", User()
         pma = query_id_by_className("Pma_galleryModel", pma_data.id)
         pma = map_value_from_input(pma, pma_data, exclude=["gallery"])
         pma = date_duration_validation(pma, pma_data)
@@ -213,6 +255,7 @@ class Query(graphene.ObjectType):
         return query.all()
 
 class Mutation(graphene.ObjectType):
+    create_user         = Mutate_User.Field()
     mutate_Pma_home     = Mutate_Pma_home.Field()
     delete_Pma_home     = Delete_Pma_home.Field()
 

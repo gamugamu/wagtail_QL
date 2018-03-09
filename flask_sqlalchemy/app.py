@@ -21,11 +21,7 @@ app.add_url_rule(
         'graphql',
         schema          = schema,
         graphiql        = True, # for having the GraphiQL interface,
-        context_value   = {'session': db_session
-
-
-
-        },
+        context_value   = {'session': db_session},
     ),
 )
 
@@ -33,11 +29,6 @@ app.add_url_rule(
 def info():
     return render_template('info.html'
     )
-
-
-@app.route('/testservice')
-def test():
-    return json.dumps({'hello': 'hello from json'})
 
 #image upload. GraphQl ne gère pas bien les uploads de data.
 @app.route('/uploadfile', methods=['POST'])

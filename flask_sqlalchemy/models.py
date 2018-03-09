@@ -16,6 +16,12 @@ Base = declarative_base()
 Base.query = db_session.query_property()
 
 ##########################
+class User(Base):
+    __tablename__   = 'user'
+    id              = Column(Integer, primary_key=True)
+    name            = Column(String, default="")
+    hash_pass       = Column(String, default="")
+
 class Pma_base(Base):
     __tablename__   = 'pmabase'
     id              = Column(Integer, primary_key=True)
