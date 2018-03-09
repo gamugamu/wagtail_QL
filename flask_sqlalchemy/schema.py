@@ -16,7 +16,6 @@ import hashlib
 def query_user(user):
     hash_pass   = hashlib.sha224(user.password).hexdigest()
     user        = db_session.query(UserModel).filter(and_(UserModel.name == user.name, UserModel.hash_pass == hash_pass)).first()
-    print "query_user ", user
     return user is not None
 
 def query_id_by_className(cls_name, id, create_if_not_found=True):
@@ -220,7 +219,7 @@ class Mutate_Pma_gallery(graphene.Mutation):
         pma_data = Pma_gallery_input(required=True)
         user     = User_input(required=True)
 
-    pma     = graphene.Field(Pma_gallery)
+    pma = graphene.Field(Pma_gallery)
 
     @staticmethod
     def mutate(self, info, pma_data=None, user=None):
@@ -255,6 +254,7 @@ class Delete_Pma_gallery(graphene.Mutation):
 class Query(graphene.ObjectType):
     all_pma_home     = graphene.List(Pma_home)
     all_pma_gallery  = graphene.List(Pma_gallery)
+    user_exist       = graphene.Boolean(user=User_input(required=True))
 
     def resolve_all_pma_home(self, info, **args):
         query = Pma_home.get_query(info)  # SQLAlchemy query
@@ -263,6 +263,9 @@ class Query(graphene.ObjectType):
     def resolve_all_pma_gallery(self, info, **args):
         query = Pma_gallery.get_query(info)  # SQLAlchemy query
         return query.all()
+
+    def resolve_user_exist(self, info, user=None, **args):
+        return query_user(user)
 
 class Mutation(graphene.ObjectType):
     create_user         = Mutate_User.Field()
