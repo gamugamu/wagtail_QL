@@ -26,7 +26,7 @@ class App extends Component {
           <p id="App-subheader">Kiabi pma Admin</p>
         </header>
         <p className="App-intro"></p>
-        <img src={require('./static/Kiabi-logo.png')} alt="kiabilogo" width="200px"/>
+        <img src={require('./static/kiabi-logo.png')} alt="kiabilogo"/>
         <PmaSelector
           onSelection = {this.onSelection}
         />
