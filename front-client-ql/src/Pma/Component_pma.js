@@ -1,7 +1,7 @@
 import React from 'react';
 import {TimelinePma} from '../GUI/TimelinePma.js'
 import {Scroller} from '../GUI/Scroller.js'
-
+import {Login} from '../Services/Login.js'
 // gere les collection de pma
 export class PmaCollectionManager extends React.Component{
   constructor(props) {
@@ -61,6 +61,7 @@ export class PmaCollectionManager extends React.Component{
   render() {
     return (
       <div>
+        <Login/>
         <a className={this.hideFromState(this.isActive(), "left btn_adder waves-effect waves-light red btn", "", " hide")} onClick={this.onAddPma}>
           <i className="material-icons left">add_circle</i>Ajout gallerie
         </a>
