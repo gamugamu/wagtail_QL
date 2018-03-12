@@ -14,11 +14,17 @@ class App extends Component {
       currentTypePma: null,
     }
     // permet de changer de type de pma
-    this.onSelection = this.onSelection.bind(this)
+    this.onSelection  = this.onSelection.bind(this)
+    this.onLogged     = this.onLogged.bind(this)
   }
 
   onSelection(pmaType){
     this.pmaCollection.updatePmaType(pmaType)
+  }
+
+  onLogged(){
+      console.log("client logged");
+      this.forceUpdate()
   }
 
   render() {
@@ -39,7 +45,9 @@ class App extends Component {
           />
         </div>
         <div style={{display:Login.isUserlogged() ? 'none' : 'block', marginTop:"100px"}}>
-          <Login/>
+          <Login
+            onLogged={this.onLogged}
+          />
         </div>
         <footer className="page-footer" style={{ bottom:0, left:0, width:"100%"}}>
           <FooterKiabi/>

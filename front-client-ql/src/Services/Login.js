@@ -13,8 +13,7 @@ export class Login extends Component {
     var _this = this
     this.onLogin = this.onLogin.bind(this);
 
-    this.isAdminExist(function(){
-    }, function(isAdminExist){
+    this.isAdminExist(function(isAdminExist){
       if(!isAdminExist){
         _this.clearStorage()
       }
@@ -23,17 +22,25 @@ export class Login extends Component {
 
   static isUserlogged(){
     // l'un des deux
-    return (localStorage.getItem('login')) !== null
+    return (sessionStorage.getItem('login')) !== null
   }
 
   static userData(){
     // l'un des deux
-    var storage = localStorage
-    return [storage.getItem('login'), storage.getItem('password')]
+    return [sessionStorage.getItem('login'), sessionStorage.getItem('password')]
+  }
+
+  store(login, password){
+    sessionStorage.setItem('login', login)
+    sessionStorage.setItem('password', password)
   }
 
   getStorage(){
     return localStorage
+  }
+
+  clearStorage(){
+    sessionStorage.clear();
   }
 
   isUserExist(callback){
@@ -48,16 +55,19 @@ export class Login extends Component {
               password: ${JSON.stringify(this.state.password)}}
             )}`
         }
-    };
+      };
+
+    var _this = this
     // swap bewteen configGraphQL and configJson (same response)
     axios(configJson).then(response => {
       callback(response.data.data["userExist"])
     }).catch(err => {
+      console.log("err?", err);
       callback(false)
     });
   }
 
-  isAdminExist(callback, adminDoesntExist=null){
+  isAdminExist(adminDoesntExist=null){
     var axios = require('axios')
     let configJson = {
       url: configFor('url_servicePma_graphql'),
@@ -71,20 +81,10 @@ export class Login extends Component {
     // swap bewteen configGraphQL and configJson (same response)
     axios(configJson).then(response => {
       var adminExist = response.data.data["adminExist"]
-
-      if(adminDoesntExist){
-        adminDoesntExist(adminExist)
-      }else{
-        if(!adminExist){
-          _this.createUser(callback)
-        }else{
-          _this.clearStorage()
-          callback(false)
-        }
-      }
+      adminDoesntExist(adminExist)
     }).catch(err => {
       console.log("error", err);
-      callback(false)
+      adminDoesntExist(false)
     });
   }
 
@@ -113,32 +113,22 @@ export class Login extends Component {
     });
   }
 
-  clearStorage(){
-    localStorage.clear();
-  }
-
   onLogin(){
       var _this   = this
-
-      this.isAdminExist(function(value){
-        if(value === true){
-          var storage = _this.getStorage()
-          storage.setItem('password', _this.state.password);
-          storage.setItem('login', _this.state.login);
+      this.isUserExist(function(exist){
+        if(exist === true){
+          _this.store(_this.state.login, _this.state.password)
+          _this.props.onLogged();
         }else{
           window.Materialize.toast('Mot-de-passe / Login invalide ', 4000)
         }
       })
   }
 
-  getStorage(){
-      return localStorage
-  }
-
   render() {
     return (
       <div className="container">
-        <div className="container" style={{width:"400px", marginTop:"30px"}}>
+        <div className="container">
           <label htmlFor="uname"><b>Username</b></label>
 
           <input value={this.state.login} onChange={(e) => this.setState({login: e.target.value})} type="text" placeholder="Entrez nom d'utilisateur" name="uname" required />
