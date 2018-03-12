@@ -12,7 +12,7 @@ export class Login extends Component {
     this.onLogin = this.onLogin.bind(this);
   }
 
-  static isAutologged(){
+  static isUserlogged(){
     // l'un des deux
     return (localStorage.getItem('login') && sessionStorage.getItem('login')) !== null
   }
@@ -60,7 +60,7 @@ export class Login extends Component {
   render() {
     return (
       <div className="container">
-        <div className="container" style={{width:"400px"}}>
+        <div className="container" style={{width:"400px", marginTop:"30px"}}>
           <label htmlFor="uname"><b>Username</b></label>
 
           <input value={this.state.login} onChange={(e) => this.setState({login: e.target.value})} type="text" placeholder="Entrez nom d'utilisateur" name="uname" required />
@@ -74,8 +74,7 @@ export class Login extends Component {
             <label htmlFor="remember" value={this.state.rememberMe} onChange={(e) => this.setState({rememberMe: e.target.value})}>Remember me</label>
           </p>
         </form>
-        <a className="waves-effect waves-light btn" onClick={this.onLogin} ><i className="material-icons left"></i>Login</a>
-
+        <a style={{marginTop:"10px"}} className="waves-effect waves-light btn" onClick={this.onLogin} ><i className="material-icons left"></i>Login</a>
         </div>
 
       );

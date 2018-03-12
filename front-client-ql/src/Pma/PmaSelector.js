@@ -20,7 +20,7 @@ export class PmaSelector extends React.Component{
 
   render() {
       return (
-        <div id="wrapped_home_selector" className="center-align">
+        <div id="wrapped_home_selector" className="center-align" style={{marginTop:'50px'}}>
             <div id="tesst_0" className="center_selector hoverable" onClick={this.props.onSelection.bind(this, Pmatype1)}/>
             <div id="tesst_1" className="center_selector hoverable" onClick={this.props.onSelection.bind(this, Pmatype2)}/>
             <div id="tesst_2" className="center_selector hoverable" onClick={this.props.onSelection.bind(this, "pma_2")}/>

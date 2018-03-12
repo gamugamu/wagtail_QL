@@ -4,6 +4,8 @@ import './App.css';
 
 import {PmaCollectionManager} from './Pma/Component_pma.js'
 import {PmaSelector} from './Pma/PmaSelector.js'
+import {Login} from './Services/Login.js'
+import {FooterKiabi} from './GUI/FooterKiabi.js'
 
 class App extends Component {
   constructor(props) {
@@ -27,14 +29,22 @@ class App extends Component {
         </header>
         <p className="App-intro"></p>
         <img src={require('./static/kiabi-logo.png')} alt="kiabilogo"/>
-        <PmaSelector
-          onSelection = {this.onSelection}
-        />
-        <PmaCollectionManager
-          ref = {(pmaCollection) => { this.pmaCollection = pmaCollection}}
-        />
-        <footer id="App-footer">
+
+        <div style={{display:Login.isUserlogged() ? 'block' : 'none'}}>
+          <PmaSelector
+            onSelection = {this.onSelection}
+          />
+          <PmaCollectionManager
+            ref = {(pmaCollection) => { this.pmaCollection = pmaCollection}}
+          />
+        </div>
+        <div style={{display:Login.isUserlogged() ? 'none' : 'block'}}>
+          <Login/>
+        </div>
+        <footer className="page-footer">
+          <FooterKiabi/>
         </footer>
+
       </div>
     );
   }

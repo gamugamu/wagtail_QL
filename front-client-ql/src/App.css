@@ -21,8 +21,7 @@
   font-style: italic;
 }
 
-#App-footer {
-  height: 100px;
+.App-footer {
   background-color: rgb(21, 19, 56);
 }
 
@@ -100,6 +99,10 @@
 }
 
 /* ################# */
+
+.hidden{
+    visibility: hidden;
+}
 
 .dragAndDropArea{
   height: 200px;

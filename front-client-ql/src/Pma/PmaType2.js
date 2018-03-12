@@ -12,6 +12,7 @@ class gallery {
     this.caption          = ""
     this.urlImage         = ""
     this.urlRedirection   = ""
+    this.id               = 0
   }
 }
 
@@ -46,6 +47,7 @@ export class Pmatype2 extends Pmatype1{
                 dateStart
                 dateEnd
                 gallery{
+                    id
                     title
                     caption
                     urlImage
@@ -246,7 +248,7 @@ willDelete(){
                   {this.r_indexes(this.state.currentIndexSelected)}
                   {this.r_cardImage(this.state.currentIndexSelected, this.url_image_forIndex(this.state.currentIndexSelected))}
                 <div className="gallery_data">
-                  {this.r_title(this.state.currentIndexSelected, "title", this.state.galleries[this.state.currentIndexSelected].title)}
+                  {this.r_title(this.state.currentIndexSelected, "title", this.state.galleries[this.state.currentIndexSelected].title, this.state.id)}
                   {this.r_caption(this.state.currentIndexSelected, "caption", this.state.galleries[this.state.currentIndexSelected].caption)}
                 </div> {/* gallery_data */}
              </div> {/* gallery-content */}
@@ -265,10 +267,10 @@ willDelete(){
   // render Helper
   /////////////////////////////////////////////////////
   // réimplementation des méthodes
-  r_title = (idx, key, value) => {
+  r_title = (idx, key, value, id) => {
     return(
       <div className="input-field">
-        <input spellCheck="false" value={value} onChange={(e) => this.update_render(idx, key, e.target.value)} id="input_000" type="text" className="validate"></input>
+        <input spellCheck="false" value={value} onChange={(e) => this.update_render(idx, key, e.target.value)} id={"input_" + id} type="text" className="validate"></input>
         <label className="active">Titre</label>
       </div>
     )
