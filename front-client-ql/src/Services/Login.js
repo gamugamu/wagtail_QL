@@ -9,16 +9,31 @@ export class Login extends Component {
       password: "",
       rememberMe: false
     }
+
+    var _this = this
     this.onLogin = this.onLogin.bind(this);
+
+    this.isAdminExist(function(){
+    }, function(isAdminExist){
+      if(!isAdminExist){
+        _this.clearStorage()
+      }
+    })
   }
 
   static isUserlogged(){
     // l'un des deux
-    return (localStorage.getItem('login') && sessionStorage.getItem('login')) !== null
+    return (localStorage.getItem('login')) !== null
+  }
+
+  static userData(){
+    // l'un des deux
+    var storage = localStorage
+    return [storage.getItem('login'), storage.getItem('password')]
   }
 
   getStorage(){
-    return this.state.rememberMe? localStorage : sessionStorage
+    return localStorage
   }
 
   isUserExist(callback){
@@ -27,22 +42,85 @@ export class Login extends Component {
         url: configFor('url_servicePma_graphql'),
         method: 'post',
         data: {
-          query: `query user{ userExist(user: {name:${JSON.stringify(this.state.login)}, password: ${JSON.stringify(this.state.password)}})}`
+          query: `query user{ userExist(
+            user: {
+              name: ${JSON.stringify(this.state.login)},
+              password: ${JSON.stringify(this.state.password)}}
+            )}`
         }
     };
     // swap bewteen configGraphQL and configJson (same response)
     axios(configJson).then(response => {
       callback(response.data.data["userExist"])
     }).catch(err => {
-      console.log('graphql error:', err);
       callback(false)
     });
   }
 
+  isAdminExist(callback, adminDoesntExist=null){
+    var axios = require('axios')
+    let configJson = {
+      url: configFor('url_servicePma_graphql'),
+      method: 'post',
+      data: {
+        query: `query admin{ adminExist }`
+      }
+    };
+
+    var _this = this
+    // swap bewteen configGraphQL and configJson (same response)
+    axios(configJson).then(response => {
+      var adminExist = response.data.data["adminExist"]
+
+      if(adminDoesntExist){
+        adminDoesntExist(adminExist)
+      }else{
+        if(!adminExist){
+          _this.createUser(callback)
+        }else{
+          _this.clearStorage()
+          callback(false)
+        }
+      }
+    }).catch(err => {
+      console.log("error", err);
+      callback(false)
+    });
+  }
+
+  createUser(callback){
+      var axios = require('axios')
+      let configJson = {
+        url: configFor('url_servicePma_graphql'),
+        method: 'post',
+        data: {
+          query: `mutation create{
+            createUser(user: {
+                name: ${JSON.stringify(this.state.login)},
+            password: ${JSON.stringify(this.state.password)}}) {
+              user {
+                name
+              }
+            } }`
+        }
+    };
+
+    // swap bewteen configGraphQL and configJson (same response)
+    axios(configJson).then(response => {
+      callback(true)
+    }).catch(err => {
+      callback(false)
+    });
+  }
+
+  clearStorage(){
+    localStorage.clear();
+  }
+
   onLogin(){
       var _this   = this
-      console.log("---> ", Login.isAutologged());
-      this.isUserExist(function(value){
+
+      this.isAdminExist(function(value){
         if(value === true){
           var storage = _this.getStorage()
           storage.setItem('password', _this.state.password);
@@ -54,7 +132,7 @@ export class Login extends Component {
   }
 
   getStorage(){
-      return this.state.rememberMe? localStorage : sessionStorage
+      return localStorage
   }
 
   render() {

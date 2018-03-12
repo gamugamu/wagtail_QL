@@ -16,7 +16,12 @@ import hashlib
 def query_user(user):
     hash_pass   = hashlib.sha224(user.password).hexdigest()
     user        = db_session.query(UserModel).filter(and_(UserModel.name == user.name, UserModel.hash_pass == hash_pass)).first()
+
     return user is not None
+
+
+def query_admin():
+    return db_session.query(UserModel).count() != 0
 
 def query_id_by_className(cls_name, id, create_if_not_found=True):
     cls = eval(cls_name)
@@ -115,15 +120,19 @@ class Mutate_User(graphene.Mutation):
         # User ne peut être créer que sous 2 condition: Il n'existe
         # aucun compte, et le premier compte créer et le compte admin.
         # Seul le compte admin peut creer un compte
-        count = db_session.query(UserModel).count()
-        if count == 0:
+        user_db = db_session.query(UserModel).filter(and_(UserModel.name == user.name, UserModel.hash_pass == user.password)).first()
+        print "user ", user
+        if user_db is None:
+            # create
+            print "Mutate_User", user
             hash_pass   = hashlib.sha224(user.password).hexdigest()
-            user        = UserModel(name=user.name, hash_pass=hash_pass)
-            DBHelper.fast_commit(user)
+            user_       = UserModel(name=user.name, hash_pass=hash_pass)
+            DBHelper.fast_commit(user_)
+            return Mutate_User(user=user_)
         else:
-            user = db_session.query(UserModel).filter(and_(UserModel.name == user.name, UserModel.hash_pass == user.password)).first()
-            if(user is not None):
-                print "can create"
+            print "type(user)", type(user)
+            return "can create"
+
 
 ################### HOME_PMA #####################
 
@@ -159,13 +168,17 @@ class Mutate_Pma_home(graphene.Mutation):
 
 class Delete_Pma_home(graphene.Mutation):
     class Arguments:
-        id =  graphene.Int(required=True)
+        id    =  graphene.Int(required=True)
+        user  = User_input(required=True)
 
     state = graphene.Int()
 
     @staticmethod
-    def mutate(self, info, id=-1):
-        return Delete_Pma_gallery(delete_by_id("Pma_homeModel", id))
+    def mutate(self, info, id=-1, user=None):
+        if query_user(user):
+            return Delete_Pma_gallery(delete_by_id("Pma_homeModel", id))
+        else:
+            raise GraphQLError('You need the right permission in order to mutate')
 
 ################### GALLERY_PMA #####################
 def mutate_gallery_components(pma, pma_data):
@@ -223,7 +236,6 @@ class Mutate_Pma_gallery(graphene.Mutation):
 
     @staticmethod
     def mutate(self, info, pma_data=None, user=None):
-        print "Auth --> ", query_user(user)
         if query_user(user):
             pma = query_id_by_className("Pma_galleryModel", pma_data.id)
             pma = map_value_from_input(pma, pma_data, exclude=["gallery"])
@@ -242,19 +254,24 @@ class Mutate_Pma_gallery(graphene.Mutation):
 
 class Delete_Pma_gallery(graphene.Mutation):
     class Arguments:
-        id =  graphene.Int(required=True)
+        id      =  graphene.Int(required=True)
+        user    = User_input(required=True)
 
     state = graphene.Int()
 
     @staticmethod
-    def mutate(self, info, id=-1):
-        return Delete_Pma_gallery(delete_by_id("Pma_galleryModel", id))
+    def mutate(self, info, id=-1, user=None):
+        if query_user(user):
+            return Delete_Pma_gallery(delete_by_id("Pma_galleryModel", id))
+        else:
+            raise GraphQLError('You need the right permission in order to mutate')
 
 ###################################################
 class Query(graphene.ObjectType):
     all_pma_home     = graphene.List(Pma_home)
     all_pma_gallery  = graphene.List(Pma_gallery)
     user_exist       = graphene.Boolean(user=User_input(required=True))
+    admin_exist      = graphene.Boolean()
 
     def resolve_all_pma_home(self, info, **args):
         query = Pma_home.get_query(info)  # SQLAlchemy query
@@ -266,6 +283,9 @@ class Query(graphene.ObjectType):
 
     def resolve_user_exist(self, info, user=None, **args):
         return query_user(user)
+
+    def resolve_admin_exist(self, info, **args):
+        return query_admin()
 
 class Mutation(graphene.ObjectType):
     create_user         = Mutate_User.Field()

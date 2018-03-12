@@ -3,7 +3,8 @@ import {uploadfile, configFor} from '../Services/Graph.js'
 
 import {GQLStringifier} from '../Services/GQLStringifier.js'
 import {Pmatype1} from './PmaType1.js'
-import Dropzone from  'react-dropzone';
+import Dropzone from  'react-dropzone'
+import {Login} from '../Services/Login.js'
 
 class gallery {
   constructor() {
@@ -57,6 +58,7 @@ export class Pmatype2 extends Pmatype1{
           }`
         }
     };
+
     // swap bewteen configGraphQL and configJson (same response)
     axios(configJson).then(response => {
         callback(response.data.data["allPmaGallery"])
@@ -67,13 +69,16 @@ export class Pmatype2 extends Pmatype1{
 
   // query display
   static addNewElmt(callback){
+    var auth    = Login.userData()
     var axios   = require('axios')
     let configJson = {
       url: configFor('url_servicePma_graphql'),
       method: 'post',
       data: {
         query: `mutation myMutation {
-                  mutatePmaGallery(pmaData: {gallery: [{}]}) {
+                  mutatePmaGallery(
+                    user: {name: ${JSON.stringify(auth[0])}, password: ${JSON.stringify(auth[1])}},
+                    pmaData: {gallery: [{}]}) {
                     pma {
                       id
                     }
@@ -81,18 +86,22 @@ export class Pmatype2 extends Pmatype1{
                 }`
       }
     };
+    console.log("XXXX ----> ", configJson);
+
     // swap bewteen configGraphQL and configJson (same response)
     axios(configJson).then(response => {
+      console.log('result ---> :', response.data);
       callback(response.data.data["pma"])
     }).catch(err => {
-      console.log('graphql error:', err);
+      console.log('---> graphql error:', err);
     });
   }
 
   // update
   mutateFromActualState(){
+      var auth    = Login.userData()
       var axios   = require('axios');
-      var gallery =  GQLStringifier.stringify(this.state.galleries, ["imageFile"])
+      var gallery =  GQLStringifier.stringify(this.state.galleries, ["imageFile", "id"])
       // application/json example
       /* eslint-disable no-unused-vars */
       var id = (typeof this.state.id !== 'undefined')? this.state.id : 100
@@ -102,7 +111,9 @@ export class Pmatype2 extends Pmatype1{
       	method: 'post',
       	data: {
       		query: `mutation m {
-            mutatePmaGallery(pmaData: {
+            mutatePmaGallery(
+              user: {name: ${JSON.stringify(auth[0])}, password: ${JSON.stringify(auth[1])}},
+              pmaData: {
               id:` + id + `
               title:    ${JSON.stringify(this.state.title)},
               caption:  ${JSON.stringify(this.state.caption)},
@@ -129,27 +140,31 @@ export class Pmatype2 extends Pmatype1{
 
 // delete
 willDelete(){
+  var auth        = Login.userData()
   var axios       = require('axios');
   let configJson  = {
     url: configFor('url_servicePma_graphql'),
     method: 'post',
     data: {
       query: `mutation m {
-        deletePmaGallery(id:${this.state.id}){
+        deletePmaGallery(
+          user: {name: ${JSON.stringify(auth[0])}, password: ${JSON.stringify(auth[1])}},
+          id:${this.state.id}){
           state
         }
       }`
     }
   };
+
+  var _this = this
   // swap bewteen configGraphQL and configJson (same response)
   axios(configJson).then(response => {
-    console.log('graphql response:', response.data);
+    _this.props.redisplay()
   }).catch(err => {
-    console.log('graphql error:', err);
+    console.log('---> graphql error:', err);
   });
-
-  super.willDelete()
 }
+
 
 // display
   display(blob){
@@ -196,7 +211,6 @@ willDelete(){
   }
 
   onAddingNewGallery(){
-    console.log("fe",this.state.galleries.length, max_gallery);
     if(this.state.galleries.length < max_gallery){
       var g = this.state.galleries.slice()
       g.push(new gallery())

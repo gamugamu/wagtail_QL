@@ -6,7 +6,8 @@ export class PmaCollectionManager extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      pma: []
+      pma: [],
+      currentPmaType: undefined
     };
     this.onAddPma       = this.onAddPma.bind(this)
     this.updatePmaType  = this.updatePmaType.bind(this)
@@ -18,6 +19,10 @@ export class PmaCollectionManager extends React.Component{
     // display le nombre d'object de ce type
     // clean
     var _this = this
+    this.setState({
+      currentPmaType: "pmaType"
+    })
+
     // update
     pmaType.handleQuerieFindAllElmt(function(data){
       // Note: Reactjs est très débile.
@@ -54,7 +59,7 @@ export class PmaCollectionManager extends React.Component{
   }
 
   isActive(){
-    return (this.state.pma.length !== 0)
+    return (this.state.currentPmaType !== undefined)
   }
 
   render() {

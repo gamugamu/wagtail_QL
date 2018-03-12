@@ -38,10 +38,10 @@ class App extends Component {
             ref = {(pmaCollection) => { this.pmaCollection = pmaCollection}}
           />
         </div>
-        <div style={{display:Login.isUserlogged() ? 'none' : 'block'}}>
+        <div style={{display:Login.isUserlogged() ? 'none' : 'block', marginTop:"100px"}}>
           <Login/>
         </div>
-        <footer className="page-footer">
+        <footer className="page-footer" style={{ bottom:0, left:0, width:"100%"}}>
           <FooterKiabi/>
         </footer>
 
