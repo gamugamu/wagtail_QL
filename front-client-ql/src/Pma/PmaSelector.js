@@ -14,10 +14,6 @@ export class PmaSelector extends React.Component{
     }
   }
 
-  test(){
-    console.log("ok   +++");
-  }
-
   render() {
       return (
         <div id="wrapped_home_selector" className="center-align" style={{marginTop:'50px'}}>

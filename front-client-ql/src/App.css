@@ -262,6 +262,15 @@ textarea.materialize-textarea{
 
 /* sticky footer end */
 
+.btnaddgallery{
+  background-color: white;
+  width: 160px;
+  height: 160px;
+  position: relative;
+  margin-top: -160px;
+  margin-left: -350px;
+}
+
 .gallery-content {
   background-color: AliceBlue ;
   border-style: dashed;

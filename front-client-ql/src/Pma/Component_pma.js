@@ -68,8 +68,8 @@ export class PmaCollectionManager extends React.Component{
     if (!this.state.shouldHide) {
         return (
           <div>
-            <a className={this.hideFromState(this.isActive(), "left btn_adder waves-effect waves-light red btn", "", " hide")} onClick={this.onAddPma}>
-              <i className="material-icons left">add_circle</i>Ajout gallerie
+            <a className="btnaddgallery hoverable btn-floating waves-effect waves-light">
+                <img src={require('../static/gall-add.png')} alt="add" onClick={this.onAddPma}/>
             </a>
             <div className="noselect" id="scroller-wrapper" onScroll={this.handleScroll}>
               <div id="scroller" ref="scroller"
