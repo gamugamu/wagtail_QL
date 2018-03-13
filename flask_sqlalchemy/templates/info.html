@@ -6,19 +6,19 @@
     </head>
 
     <body>
-        <h1>Version 0.3.0</h1>
+        <h1>Version 0.4.0</h1>
         <ul>
           <p><b>retourne tout les pma de la page home</b></p>
           <code>
-            query pma{
-          allPmaHome{
-            title
-            caption
-            id
-            dateStart
-            dateEnd
-          }
-          }
+            query pma {
+              allPmaHome {
+                title
+                caption
+                id
+                dateStart
+                dateEnd
+              }
+            }
           </code>
         </ul>
         <ul>
@@ -37,40 +37,69 @@
         </ul>
         <ul>
         <h2>Mutations</h2>
-        <p><b>modifie une page home</b></p>
+        <p><b>Teste si admin exist</b></p>
         <code>
-          mutation myMutation {
-            mutatePmaHome(pmaData: {title: "new pma", caption: "lobulous"}) {
-             pma{
-              title
-              caption
-            }
+          query adminXist {
+            adminExist
+          }
+        </code>
+        <p><b>Teste si user exist</b></p>
+        <code>
+          query userXist {
+            userExist(user: {name: "user", password: "password"})
+          }
+        </code>
+        <p><b>Créer admin/utilisateur</b></p>
+        <code>
+          mutation createUser {
+            createUser(user: {name: "user", password: "password"}) {
+              user {
+                name
+              }
             }
           }
-
         </code>
-      </ul>
-      <ul>
-        <p><b>modifie une gallerie</b></p>
+
+        <p><b>Créer une gallery</b></p>
         <code>
-          mutation myMutation {
-                    mutatePmaGallery(pmaData: {
-                      id:       1,
-                      title:    "new pma from js",
-                      caption:  "lobulous",
-                      gallery:  [ {title:"Deux titre"}]}) {
-                      pma{
-                        title,
-                        caption,
-                        gallery{
-                          title
-                          caption
-                        }
-                      }
-                    }
-                  }
+          mutation createGallery {
+            mutatePmaGallery(user: {name: "user", password: "password"}, pmaData: {title: "new pma from js", caption: "lobulous", gallery: [{title: "Deux titre"}]}) {
+              pma {
+                title
+                caption
+                gallery {
+                  title
+                  caption
+                }
+              }
+            }
+          }
+        </code>
+
+        <p><b>Supprime une gallery</b></p>
+        <code>
+          mutation m {
+            deletePmaGallery(user: {name: "user", password: "password"}, id: 4) {
+              state
+            }
+          }
+        </code>
+
+        <p><b>modifie une page home</b></p>
+        <code>
+          mutation createGallery {
+            mutatePmaGallery(user: {name: "user", password: "password"}, pmaData: {id: 1, title: "new pma from js", caption: "lobulous", gallery: [{title: "Deux titre"}]}) {
+              pma {
+                title
+                caption
+                gallery {
+                  title
+                  caption
+                }
+              }
+            }
+          }
         </code>
       </ul>
-
     </body>
 </html>
