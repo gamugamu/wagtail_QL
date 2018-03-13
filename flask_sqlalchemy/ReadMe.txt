@@ -1,39 +1,5 @@
-query pma {
-  allPmaHome {
-    title
-    caption
-    id
-    dateStart
-    dateEnd
-  }
-}
+raise EnvironmentError('Project was not passed and could not be '
+EnvironmentError: Project was not passed and could not be determined from the environment.
 
-mutation createGallery {
-  mutatePmaGallery(user: {name: "user", password: "password"}, pmaData: {title: "new pma from js", caption: "lobulous", gallery: [{title: "Deux titre"}]}) {
-    pma {
-      title
-      caption
-      gallery {
-        title
-        caption
-      }
-    }
-  }
-}
-
-mutation createPmaHome {
-  mutatePmaHome(user: {name: "uer", password: "password"}, pmaData: {title: "new pma", caption: "lobulous"}) {
-    pma {
-      title
-      caption
-    }
-  }
-}
-
-mutation createUser {
-  createUser(user: {name: "user", password: "password"}) {
-    user {
-      name
-    }
-  }
-}
+// Mettre le bon gcloud project_id
+--> ENV GCLOUD_PROJECT fire-193914
