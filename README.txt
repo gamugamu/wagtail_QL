@@ -1,54 +1,24 @@
-Le projet use kubernet
+installation minio (gestion cloud/bucket) depuis docker. Est nécessaire afin de stocker les images du pma.
+docker run -p 9000:9000 -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE" -e "MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" minio/minio server /data
 
-Minikube + kubernet en local
-Gcloud + kubernet en prod.
+https://github.com/minio/minio-py/blob/master/docs/API.md
+from minio import Minio
+from minio.error import ResponseError
 
-
-(When switching back and forth between Container Engine and Minikube):
-
-# En prod
-#graphql-test est le nom du cluster
-
-gcloud container clusters get-credentials graphql-test --zone europe-west1-b
-
-# En dev
-minikube start --vm-driver=xhyve
-kubectl config use-context minikube
-export DJANGO_PASSWORD=mysecretpassword
-
-Les images docker doivent être buildé en local pour minikube.
-ex (builder le docker mysite/Dockerfile): docker build -t cryptodraco/wagtail-ql .
-
-Les images doivent être push en prod sur docker registre ou google registry
-ex:  gcloud docker -- push gcr.io/fire-193914/frontend
-
-Il y a 3 service:
-Redis pour le cache.
-Postgres pour la persistance
-Frontend le site front
-
-Pour les exposer sur minikube ou gcloud, être dans le bon context d’environnement avec kubectl puis:
-
-En dev
-kubectl create -f kubernet_conf/redis.yaml
-kubectl create -f kubernet_conf/postgres_minikube.yaml
-kubectl create -f kubernet_conf/frontend.yalm
-
-En prod
-kubectl create -f kubernet_conf/redis.yaml
-kubectl create -f kubernet_conf/postgres_gke.yaml
-kubectl create -f kubernet_conf/frontend_prod.yal
+minioClient = Minio('127.0.0.1:9000', access_key='AKIAIOSFODNN7EXAMPLE', secret_key='wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', secure=False)
+minioClient.make_bucket("maylogs")
+minioClient.list_buckets()
+// [<minio.definitions.Bucket object at 0x10f67f890>]
 
 
-Test:
-╰─$ kubectl get services                                                                                                                                                                                                    1 ↵
-NAME           TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
-guestbook      LoadBalancer   10.59.242.133   35.189.238.42   80:30985/TCP   22h
-kubernetes     ClusterIP      10.59.240.1     <none>          443/TCP        22h
-postgres       ClusterIP      10.59.244.51    <none>          5432/TCP       14h
-redis-master   ClusterIP      10.59.240.43    <none>          6379/TCP       22h
-redis-slave    ClusterIP      10.59.254.122   <none>          6379/TCP       22h
+instalation backend
+// configurer que le back pointe sur le bon cloud minio bucket (pas encore fait)
+docker build -t cryptodraco/flask_gql:v0.X.x .
+docker push cryptodraco/flask_gql:v0.X.x // pour remote
+docker run -it -p 80:8080 -m 256m --memory-swap=256m  cryptodraco/flask_gql:v0.X.x
 
-#port forwading
-kubectl port-forward <posgtres-pod> 5432:5432 &
-kubectl port-forward <redis-pod> 6379:6379 &
+installation front
+// configurer que le front pointe sur le bon back depuis front-client/src/config.js
+docker build -t cryptodraco/front_gql:v0.X.x .
+docker push cryptodraco/front_gql:v0.X.x // pour remote
+docker run -it -p 80:8080 -m 256m --memory-swap=256m  cryptodraco/front_gql:v0.X.x

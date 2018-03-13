@@ -1,4 +1,5 @@
 argh==0.26.2
+certifi==2018.1.18
 click==6.7
 enum34==1.1.6
 Flask==0.12.2
@@ -39,5 +40,6 @@ singledispatch==3.4.0.3
 six==1.11.0
 SQLAlchemy==1.2.2
 typing==3.6.4
+urllib3==1.22
 watchdog==0.8.3
 Werkzeug==0.14.1
