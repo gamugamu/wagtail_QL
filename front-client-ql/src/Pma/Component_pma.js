@@ -7,7 +7,8 @@ export class PmaCollectionManager extends React.Component{
     super(props);
     this.state = {
       pma: [],
-      currentPmaType: undefined
+      currentPmaType: undefined,
+      shouldHide: true
     };
     this.onAddPma       = this.onAddPma.bind(this)
     this.updatePmaType  = this.updatePmaType.bind(this)
@@ -20,7 +21,8 @@ export class PmaCollectionManager extends React.Component{
     // clean
     var _this = this
     this.setState({
-      currentPmaType: "pmaType"
+      currentPmaType: "pmaType",
+      shouldHide: false
     })
 
     // update
@@ -63,34 +65,39 @@ export class PmaCollectionManager extends React.Component{
   }
 
   render() {
-    return (
-      <div>
-        <a className={this.hideFromState(this.isActive(), "left btn_adder waves-effect waves-light red btn", "", " hide")} onClick={this.onAddPma}>
-          <i className="material-icons left">add_circle</i>Ajout gallerie
-        </a>
-        <div className="noselect" id="scroller-wrapper" onScroll={this.handleScroll}>
-          <div id="scroller" ref="scroller"
-            onMouseUp     = {((e) => this.scroller.onMouseUp(e, this.refs.scroller))}
-            onMouseDown   = {((e) => this.scroller.onMouseDown(e, this.refs.scroller))}
-            onMouseMove   = {((e) => this.scroller.onMouseMove(e, this.refs.scroller))}
-            onMouseLeave  = {((e) => this.scroller.onMouseLeave(e, this.refs.scroller))}>
-            {this.state.pma.map((Item, index) => (
-              <this.state.typePma
-                key           = {index}
-                pma           = {Item}
-                onDateChange  = {(child)  => this.onDateChange(child)}
-                redisplay     = {()       => this.redisplay()}
-                />
-              ))}
+    if (!this.state.shouldHide) {
+        return (
+          <div>
+            <a className={this.hideFromState(this.isActive(), "left btn_adder waves-effect waves-light red btn", "", " hide")} onClick={this.onAddPma}>
+              <i className="material-icons left">add_circle</i>Ajout gallerie
+            </a>
+            <div className="noselect" id="scroller-wrapper" onScroll={this.handleScroll}>
+              <div id="scroller" ref="scroller"
+                onMouseUp     = {((e) => this.scroller.onMouseUp(e, this.refs.scroller))}
+                onMouseDown   = {((e) => this.scroller.onMouseDown(e, this.refs.scroller))}
+                onMouseMove   = {((e) => this.scroller.onMouseMove(e, this.refs.scroller))}
+                onMouseLeave  = {((e) => this.scroller.onMouseLeave(e, this.refs.scroller))}>
+                {this.state.pma.map((Item, index) => (
+                  <this.state.typePma
+                    key           = {index}
+                    pma           = {Item}
+                    onDateChange  = {(child)  => this.onDateChange(child)}
+                    redisplay     = {()       => this.redisplay()}
+                    />
+                  ))}
+              </div>
+            </div>
+            <div className= "timeLine_on">
+              <TimelinePma
+                ref       = {(timeLine) => { this.timeLine = timeLine }}
+                isActive  = {true}
+              />
+            </div>
           </div>
-        </div>
-        <div className= {this.hideFromState(this.isActive(), "", "timeLine_on", "timeLine_off")}>
-          <TimelinePma
-            ref       = {(timeLine) => { this.timeLine = timeLine }}
-            isActive  = {this.isActive()}
-          />
-        </div>
-      </div>
-    );
+        );
+    } // if
+    else{
+      return <div></div>
+    }
   }
 }

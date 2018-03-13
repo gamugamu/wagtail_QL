@@ -57,7 +57,6 @@ export class Login extends Component {
         }
       };
 
-    var _this = this
     // swap bewteen configGraphQL and configJson (same response)
     axios(configJson).then(response => {
       callback(response.data.data["userExist"])
@@ -77,7 +76,6 @@ export class Login extends Component {
       }
     };
 
-    var _this = this
     // swap bewteen configGraphQL and configJson (same response)
     axios(configJson).then(response => {
       var adminExist = response.data.data["adminExist"]

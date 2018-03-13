@@ -10,9 +10,6 @@ import {FooterKiabi} from './GUI/FooterKiabi.js'
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      currentTypePma: null,
-    }
     // permet de changer de type de pma
     this.onSelection  = this.onSelection.bind(this)
     this.onLogged     = this.onLogged.bind(this)
@@ -23,17 +20,16 @@ class App extends Component {
   }
 
   onLogged(){
-      console.log("client logged");
       this.forceUpdate()
   }
 
   render() {
     return (
-      <body className="App">
+      <div className="App Site">
         <header className="App-header">
           <p id="App-subheader">Kiabi pma Admin</p>
         </header>
-        <main>
+        <main className="Site-content">
           <p className="App-intro"></p>
           <img src={require('./static/kiabi-logo.png')} alt="kiabilogo"/>
           <div style={{display:Login.isUserlogged() ? 'block' : 'none'}}>
@@ -46,14 +42,14 @@ class App extends Component {
           </div>
           <div style={{display:Login.isUserlogged() ? 'none' : 'block', marginTop:"100px"}}>
             <Login
-              onLogged={this.onLogged}
+              onLogged = {this.onLogged}
             />
           </div>
         </main>
-        <footer className="page-footer" style={{ bottom:0, left:0, width:"100%"}}>
+        <footer className="page-footer">
           <FooterKiabi/>
         </footer>
-      </body>
+      </div>
     );
   }
 }
