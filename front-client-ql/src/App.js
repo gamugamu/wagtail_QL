@@ -29,31 +29,31 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <body className="App">
         <header className="App-header">
           <p id="App-subheader">Kiabi pma Admin</p>
         </header>
-        <p className="App-intro"></p>
-        <img src={require('./static/kiabi-logo.png')} alt="kiabilogo"/>
-
-        <div style={{display:Login.isUserlogged() ? 'block' : 'none'}}>
-          <PmaSelector
-            onSelection = {this.onSelection}
-          />
-          <PmaCollectionManager
-            ref = {(pmaCollection) => { this.pmaCollection = pmaCollection}}
-          />
-        </div>
-        <div style={{display:Login.isUserlogged() ? 'none' : 'block', marginTop:"100px"}}>
-          <Login
-            onLogged={this.onLogged}
-          />
-        </div>
+        <main>
+          <p className="App-intro"></p>
+          <img src={require('./static/kiabi-logo.png')} alt="kiabilogo"/>
+          <div style={{display:Login.isUserlogged() ? 'block' : 'none'}}>
+            <PmaSelector
+              onSelection = {this.onSelection}
+            />
+            <PmaCollectionManager
+              ref = {(pmaCollection) => { this.pmaCollection = pmaCollection}}
+            />
+          </div>
+          <div style={{display:Login.isUserlogged() ? 'none' : 'block', marginTop:"100px"}}>
+            <Login
+              onLogged={this.onLogged}
+            />
+          </div>
+        </main>
         <footer className="page-footer" style={{ bottom:0, left:0, width:"100%"}}>
           <FooterKiabi/>
         </footer>
-
-      </div>
+      </body>
     );
   }
 }
