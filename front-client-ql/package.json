@@ -2,6 +2,7 @@
   "name": "front-client-ql",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://cryptodraco.hd.free.fr/site1/",
   "dependencies": {
     "apollo-boost": "^0.1.1",
     "axios": "^0.18.0",
