@@ -1,6 +1,7 @@
 # coding: utf-8
 # flask_sqlalchemy/app.py
 from flask import Flask, request, render_template
+from werkzeug.contrib.fixers import ProxyFix
 from flask_graphql import GraphQLView
 from flask import json
 from flask import Response
@@ -13,6 +14,7 @@ from bucket import upload_to_default_bucket
 app = Flask(__name__)
 CORS(app)
 app.debug = True
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 # graphQL services
 app.add_url_rule(
@@ -24,6 +26,21 @@ app.add_url_rule(
         context_value   = {'session': db_session},
     ),
 )
+
+# Gunicorn entry point generator
+def build_app(*args):
+    #app = Flask(__name__)
+    #CORS(app)
+    #app.debug = True
+    #app.wsgi_app = ProxyFix(app.wsgi_app)
+    # Gunicorn CLI args are useless.
+    # https://stackoverflow.com/questions/8495367/
+    #
+    # Start the application in modified environment.
+    # https://stackoverflow.com/questions/18668947/
+    #
+    print "called****", args
+    return app
 
 @app.route('/')
 def info():

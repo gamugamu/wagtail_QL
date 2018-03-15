@@ -3,6 +3,11 @@ from gcloud import bigquery
 from gcloud import storage
 from gcloud.storage import Blob
 import uuid
+import ConfigParser
+
+config  = ConfigParser.ConfigParser()
+config.read('config.ini')
+print config.get('local', 'value')
 
 client = storage.Client.from_service_account_json('application.json')
 #client = storage.Client(project='fire-193914')
