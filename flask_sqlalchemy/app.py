@@ -6,15 +6,16 @@ from flask_graphql import GraphQLView
 from flask import json
 from flask import Response
 from flask_cors import CORS
-
 from models import db_session
 from schema import schema
-from bucket import upload_to_default_bucket
+from bucket import config_minio_bucket, setup_minio_bucket, upload_to_default_bucket
+import ConfigParser
+
 
 app = Flask(__name__)
 CORS(app)
-app.debug = True
-app.wsgi_app = ProxyFix(app.wsgi_app)
+app.debug       = True
+app.wsgi_app    = ProxyFix(app.wsgi_app)
 
 # graphQL services
 app.add_url_rule(
@@ -28,19 +29,25 @@ app.add_url_rule(
 )
 
 # Gunicorn entry point generator
-def build_app(*args):
-    #app = Flask(__name__)
-    #CORS(app)
-    #app.debug = True
-    #app.wsgi_app = ProxyFix(app.wsgi_app)
-    # Gunicorn CLI args are useless.
-    # https://stackoverflow.com/questions/8495367/
-    #
-    # Start the application in modified environment.
-    # https://stackoverflow.com/questions/18668947/
-    #
-    print "called****", args
+def build_app(*args, **kwargs):
+    # n'accepte qu'un argument
+
+    env_application = args[0]
+    config          = ConfigParser.ConfigParser()
+    config.read('config.ini')
+    # pointe sur le bon domaine. Le process peut être lent, et
+    # gunicorn veut son app direct.
+    domaine_name = config.get(env_application, 'bucket_url')
+    is_secure    = config.get(env_application, 'bucket_url_is_https')
+    config_minio_bucket(domaine_name, is_secure)
+
     return app
+
+@app.before_first_request
+def _run_on_start():
+    # permet de créer le bucket si il n'existe pas + d'autres conf qui
+    # peuvent prendre du temps
+    setup_minio_bucket()
 
 @app.route('/')
 def info():
