@@ -1,5 +1,4 @@
 import React from 'react';
-import {TimelinePma} from '../GUI/TimelinePma.js'
 import {Scroller} from '../GUI/Scroller.js'
 // gere les collection de pma
 export class PmaCollectionManager extends React.Component{
@@ -52,7 +51,7 @@ export class PmaCollectionManager extends React.Component{
 
   // timeLine support
   onDateChange(state){
-    this.timeLine.renderTimeline(state.id, state.dateStart, state.dateEnd, state.title)
+    //this.timeLine.renderTimeline(state.id, state.dateStart, state.dateEnd, state.title)
   }
 
   hideFromState(shouldHide, string, comp_0, comp_1){
@@ -86,12 +85,6 @@ export class PmaCollectionManager extends React.Component{
                     />
                   ))}
               </div>
-            </div>
-            <div className= "timeLine_on">
-              <TimelinePma
-                ref       = {(timeLine) => { this.timeLine = timeLine }}
-                isActive  = {true}
-              />
             </div>
           </div>
         );

@@ -26,6 +26,7 @@ export function uploadfile(image, callback){
 
     var axios = require('axios');
     axios.post(config.get('url_servicePma_uploadfile'), file).then(function (response) {
+      console.log("--REsult? ", response.data);
         callback(response.data["file_id"], null);
     }).catch(function (error) {
       callback(null, error);
