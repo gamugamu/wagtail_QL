@@ -17,8 +17,9 @@ export class Scroller{
   onMouseMove(event, scroll) {
     if(this.isActive === true){
       var dropMen = ReactDOM.findDOMNode(scroll)
-      var deltaX  = (event.screenX - this.deltaX) * /* speed */ 0.1
+      var deltaX  = (event.screenX - this.deltaX) 
       dropMen.scrollLeft -= deltaX;
+      this.deltaX = event.screenX;
     }
   }
 
