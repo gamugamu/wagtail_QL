@@ -31,7 +31,7 @@ class App extends Component {
         </header>
         <main className="Site-content">
           <p className="App-intro"></p>
-          <img src={require('./static/Kiabi-logo.png')} alt="kiabilogo"/>
+          <img src={require('./static/kiabi-logo.png')} alt="kiabilogo"/>
           <div style={{display:Login.isUserlogged() ? 'block' : 'none'}}>
             <PmaSelector
               onSelection = {this.onSelection}
