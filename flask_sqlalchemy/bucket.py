@@ -27,7 +27,7 @@ def size(file):
     file.seek(0)
     return size
 
-def config_minio_bucket(domaine_name, url_is_https=False):
+def setup_minio_bucket(domaine_name, url_is_https=False):
     global minioClient, BUCKET_NAME, DOMAINE_NAME, bucket_url_is_https
 
     DOMAINE_NAME        = domaine_name
@@ -43,10 +43,9 @@ def config_minio_bucket(domaine_name, url_is_https=False):
         # location n'a pas d'importance puisqu'heberger sur nos propre serveur
         minioClient.make_bucket(BUCKET_NAME, location="eu-west-1")
 
-def setup_minio_bucket():
+def config_minio_bucket():
     global minioClient, BUCKET_NAME
-    buckets = minioClient.list_buckets()
-
+    print "config_minio_bucket change policy"
     minioClient.set_bucket_policy(BUCKET_NAME, '*', Policy.READ_ONLY)
 
 def url_fromFileName(fileName):

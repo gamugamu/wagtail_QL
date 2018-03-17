@@ -17,6 +17,9 @@ CORS(app)
 app.debug       = True
 app.wsgi_app    = ProxyFix(app.wsgi_app)
 
+#config
+selected_env = None
+
 # graphQL services
 app.add_url_rule(
     '/graphql',
@@ -31,15 +34,8 @@ app.add_url_rule(
 # Gunicorn entry point generator
 def build_app(*args, **kwargs):
     # n'accepte qu'un argument
-
-    env_application = args[0]
-    config          = ConfigParser.ConfigParser()
-    config.read('config.ini')
-    # pointe sur le bon domaine. Le process peut être lent, et
-    # gunicorn veut son app direct.
-    domaine_name = config.get(env_application, 'bucket_url')
-    is_secure    = config.get(env_application, 'bucket_url_is_https')
-    config_minio_bucket(domaine_name, is_secure)
+    global selected_env
+    selected_env = args[0]
 
     return app
 
@@ -47,7 +43,21 @@ def build_app(*args, **kwargs):
 def _run_on_start():
     # permet de créer le bucket si il n'existe pas + d'autres conf qui
     # peuvent prendre du temps
-    setup_minio_bucket()
+    # pointe sur le bon domaine. Le process peut être lent, et
+    # gunicorn veut son app direct. Donc ce process est fait lors de la première
+    # requête. Optimisable
+    global selected_env
+    config = ConfigParser.ConfigParser()
+    config.read('config.ini')
+
+    print "result---> ", selected_env
+    domaine_name    = config.get(selected_env, 'bucket_url')
+    is_secure       = config.get(selected_env, 'bucket_url_is_https')
+    print "---> domaineName ", domaine_name
+    #init minio
+    setup_minio_bucket(domaine_name, is_secure)
+    #créer les buckets par default si nécessaire
+    config_minio_bucket()
 
 @app.route('/')
 def info():
